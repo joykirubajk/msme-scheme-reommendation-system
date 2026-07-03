@@ -20,7 +20,15 @@ const app = express();
 
 
 //Middleware
-app.use(cors());
+app.use(
+    cors({
+        origin: [
+            "https://msme-scheme-recommender-systems.vercel.app",
+            "http://localhost:5173"
+        ],
+        credentials: true
+    })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
 
