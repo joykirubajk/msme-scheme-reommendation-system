@@ -1,0 +1,840 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R 5 0 R 7 0 R 9 0 R] /Count 4 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Contents 4 0 R /Resources << /Font << /F1 11 0 R /F2 12 0 R /F3 13 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 3493 >>
+stream
+0.080 0.220 0.520 rg
+0.00 825.00 595.28 17.00 re
+f
+0.180 0.450 0.880 rg
+0.00 819.00 595.28 6.00 re
+f
+q
+0.100 0.200 0.450 rg
+BT /F2 13.0 Tf 54.00 760.00 Td (BIRLA INSTITUTE OF TECHNOLOGY & SCIENCE, PILANI) Tj ET
+Q
+q
+0.300 0.350 0.450 rg
+BT /F1 10.0 Tf 54.00 744.00 Td (WORK INTEGRATED LEARNING PROGRAMMES \(WILP\)) Tj ET
+Q
+q
+0.200 0.400 0.800 RG
+2.00 w 54.00 734.00 m 541.28 734.00 l S
+Q
+0.960 0.970 0.990 rg
+54.00 570.00 487.28 140.00 re
+f
+0.200 0.400 0.800 rg
+54.00 570.00 5.00 140.00 re
+f
+q
+0.200 0.400 0.800 rg
+BT /F2 11.0 Tf 72.00 680.00 Td (DISSERTATION TECHNICAL PROJECT REPORT) Tj ET
+Q
+q
+0.080 0.150 0.300 rg
+BT /F2 20.0 Tf 72.00 652.00 Td (SMART MSME: Empowering Entrepreneurs) Tj ET
+Q
+q
+0.080 0.150 0.300 rg
+BT /F2 18.0 Tf 72.00 628.00 Td (Through Smart Government Scheme Discovery) Tj ET
+Q
+q
+0.300 0.350 0.450 rg
+BT /F1 11.0 Tf 72.00 602.00 Td (Two-Stage Architecture & Python Machine Learning Scheme Ranking Engine) Tj ET
+Q
+q
+0.400 0.450 0.550 rg
+BT /F3 9.5 Tf 72.00 586.00 Td (Evaluated on Tamil Nadu MSME Portal Guidelines \(NEEDS, UYEGP, TWEES, KKT, PMEGP\)) Tj ET
+Q
+q
+0.100 0.200 0.450 rg
+BT /F2 10.5 Tf 54.00 520.00 Td (CANDIDATE DETAILS:) Tj ET
+Q
+q
+0.200 0.250 0.300 rg
+BT /F2 10.0 Tf 54.00 502.00 Td (Author / Student:) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 10.0 Tf 170.00 502.00 Td (Joy Kiruba. D) Tj ET
+Q
+q
+0.200 0.250 0.300 rg
+BT /F2 10.0 Tf 54.00 486.00 Td (BITS ID:) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 10.0 Tf 170.00 486.00 Td (2024TM93554) Tj ET
+Q
+q
+0.200 0.250 0.300 rg
+BT /F2 10.0 Tf 54.00 470.00 Td (Degree Programme:) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 10.0 Tf 170.00 470.00 Td (M.Tech Software Engineering) Tj ET
+Q
+q
+0.200 0.250 0.300 rg
+BT /F2 10.0 Tf 54.00 454.00 Td (Course / Dissertation:) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 10.0 Tf 170.00 454.00 Td (S1-26_SEZG628T: Dissertation) Tj ET
+Q
+q
+0.100 0.200 0.450 rg
+BT /F2 10.5 Tf 54.00 428.00 Td (SUPERVISION & HOST INSTITUTION:) Tj ET
+Q
+q
+0.200 0.250 0.300 rg
+BT /F2 10.0 Tf 54.00 410.00 Td (Supervisor / Guide:) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 10.0 Tf 170.00 410.00 Td (Ms. A. Ramadevi) Tj ET
+Q
+q
+0.200 0.250 0.300 rg
+BT /F2 10.0 Tf 54.00 394.00 Td (Host Organization:) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 10.0 Tf 170.00 394.00 Td (National Informatics Centre \(NIC\), Chennai, Tamil Nadu) Tj ET
+Q
+q
+0.200 0.250 0.300 rg
+BT /F2 10.0 Tf 54.00 378.00 Td (Date of Submission:) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 10.0 Tf 170.00 378.00 Td (November 16, 2026) Tj ET
+Q
+0.930 0.960 0.990 rg
+54.00 180.00 487.28 110.00 re
+f
+q
+0.100 0.250 0.500 rg
+BT /F2 10.5 Tf 70.00 268.00 Td (KEY HIGHLIGHTS OF THE IMPLEMENTED SYSTEM) Tj ET
+Q
+q
+0.200 0.250 0.350 rg
+BT /F1 9.0 Tf 70.00 248.00 Td (1. Two-Stage Pipeline: Node.js strictly evaluates eligibility; Python ML microservice ranks candidates.) Tj ET
+Q
+q
+0.200 0.250 0.350 rg
+BT /F1 9.0 Tf 70.00 232.00 Td (2. 3-Phased ML Ranking: Phase 1 \(Weighted Matching\) + Phase 2 \(TF-IDF Cosine Sim\) + Phase 3 \(Supervised ML\).) Tj ET
+Q
+q
+0.200 0.250 0.350 rg
+BT /F1 9.0 Tf 70.00 216.00 Td (3. Rigorous Evaluation: Benchmarked with Precision@K and NDCG@K on Expert Labeled Profiles.) Tj ET
+Q
+q
+0.200 0.250 0.350 rg
+BT /F1 9.0 Tf 70.00 200.00 Td (4. Ultra-Fast Execution: Sub-millisecond latency \(0.31 ms\) with high throughput \(>3,200 req/sec\).) Tj ET
+Q
+q
+0.800 0.850 0.900 RG
+1.00 w 54.00 80.00 m 541.28 80.00 l S
+Q
+q
+0.450 0.500 0.600 rg
+BT /F1 8.5 Tf 120.00 64.00 Td (National Informatics Centre \(NIC\) ? Government of India ? Chennai, Tamil Nadu) Tj ET
+Q
+
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Contents 6 0 R /Resources << /Font << /F1 11 0 R /F2 12 0 R /F3 13 0 R >> >> >>
+endobj
+6 0 obj
+<< /Length 5758 >>
+stream
+q
+0.850 0.880 0.920 RG
+0.80 w 54.00 800.00 m 541.28 800.00 l S
+Q
+q
+0.400 0.450 0.550 rg
+BT /F1 8.5 Tf 54.00 806.00 Td (SMART MSME: Technical Report & ML Recommendation Engine) Tj ET
+Q
+q
+0.400 0.450 0.550 rg
+BT /F1 8.5 Tf 431.28 806.00 Td (NIC Chennai / BITS Pilani) Tj ET
+Q
+q
+0.850 0.880 0.920 RG
+0.80 w 54.00 48.00 m 541.28 48.00 l S
+Q
+q
+0.500 0.550 0.600 rg
+BT /F3 8.0 Tf 54.00 36.00 Td (Confidential - For Academic Dissertation Review) Tj ET
+Q
+q
+0.400 0.450 0.550 rg
+BT /F1 8.5 Tf 491.28 36.00 Td (Page 2 of 5) Tj ET
+Q
+q
+0.080 0.200 0.500 rg
+BT /F2 13.0 Tf 54.00 760.00 Td (1. EXECUTIVE SUMMARY & SYSTEM OBJECTIVES) Tj ET
+Q
+q
+0.200 0.400 0.800 RG
+1.20 w 54.00 752.00 m 541.28 752.00 l S
+Q
+q
+0.150 0.150 0.200 rg
+BT /F1 9.5 Tf 54.00 734.00 Td (Micro, Small, and Medium Enterprises \(MSMEs\) are vital drivers of economic growth, employment, and industrial) Tj ET
+Q
+q
+0.150 0.150 0.200 rg
+BT /F1 9.5 Tf 54.00 720.00 Td (activity in Tamil Nadu. While the state government offers numerous targeted incentive schemes, entrepreneurs face) Tj ET
+Q
+q
+0.150 0.150 0.200 rg
+BT /F1 9.5 Tf 54.00 706.00 Td (a discoverability gap: eligibility criteria are complex, spread across multiple static portals, and lack personalized matching.) Tj ET
+Q
+q
+0.150 0.150 0.200 rg
+BT /F1 9.5 Tf 54.00 692.00 Td (The SMART MSME platform resolves this via a full-stack, two-stage intelligent scheme recommendation system.) Tj ET
+Q
+q
+0.080 0.200 0.500 rg
+BT /F2 13.0 Tf 54.00 668.00 Td (2. TWO-STAGE ARCHITECTURE & PIPELINE DESIGN) Tj ET
+Q
+q
+0.200 0.400 0.800 RG
+1.20 w 54.00 660.00 m 541.28 660.00 l S
+Q
+q
+0.150 0.150 0.200 rg
+BT /F1 9.5 Tf 54.00 642.00 Td (To guarantee computational resilience and strict administrative compliance, the platform enforces a clear separation:) Tj ET
+Q
+0.970 0.980 1.000 rg
+54.00 516.00 236.64 110.00 re
+f
+q
+0.200 0.450 0.850 RG
+2.50 w 54.00 626.00 m 290.64 626.00 l S
+Q
+q
+0.100 0.250 0.550 rg
+BT /F2 10.0 Tf 64.00 608.00 Td (STAGE 1: Node.js Express \(Port 8000\)) Tj ET
+Q
+q
+0.200 0.500 0.200 rg
+BT /F2 8.5 Tf 64.00 594.00 Td (Rule-Based Eligibility Filtering) Tj ET
+Q
+q
+0.200 0.250 0.350 rg
+BT /F1 8.5 Tf 64.00 578.00 Td (* Validates mandatory legal criteria \(Age, Gender\).) Tj ET
+Q
+q
+0.200 0.250 0.350 rg
+BT /F1 8.5 Tf 64.00 564.00 Td (* Verifies investment thresholds & state domicile.) Tj ET
+Q
+q
+0.200 0.250 0.350 rg
+BT /F1 8.5 Tf 64.00 550.00 Td (* Filters out all non-eligible schemes definitively.) Tj ET
+Q
+q
+0.100 0.200 0.400 rg
+BT /F2 8.5 Tf 64.00 536.00 Td (* Passes ONLY verified candidates to Python ML.) Tj ET
+Q
+0.950 0.990 0.960 rg
+304.64 516.00 236.64 110.00 re
+f
+q
+0.150 0.650 0.350 RG
+2.50 w 304.64 626.00 m 541.28 626.00 l S
+Q
+q
+0.100 0.450 0.200 rg
+BT /F2 10.0 Tf 314.64 608.00 Td (STAGE 2: Python ML Service \(Port 5001\)) Tj ET
+Q
+q
+0.150 0.350 0.650 rg
+BT /F2 8.5 Tf 314.64 594.00 Td (Machine Learning Re-ranking Engine) Tj ET
+Q
+q
+0.200 0.250 0.350 rg
+BT /F1 8.5 Tf 314.64 578.00 Td (* NEVER decides eligibility \(governance rule\).) Tj ET
+Q
+q
+0.200 0.250 0.350 rg
+BT /F1 8.5 Tf 314.64 564.00 Td (* Ranks candidates by contextual relevance.) Tj ET
+Q
+q
+0.200 0.250 0.350 rg
+BT /F1 8.5 Tf 314.64 550.00 Td (* Combines Weighted Matching + TF-IDF Cosine Sim.) Tj ET
+Q
+q
+0.100 0.350 0.200 rg
+BT /F2 8.5 Tf 314.64 536.00 Td (* Returns score \(0.0 to 1.0\) & explainable reasons.) Tj ET
+Q
+q
+0.080 0.200 0.500 rg
+BT /F2 13.0 Tf 54.00 496.00 Td (3. THE THREE PHASES OF THE ML RANKING ENGINE) Tj ET
+Q
+q
+0.200 0.400 0.800 RG
+1.20 w 54.00 488.00 m 541.28 488.00 l S
+Q
+q
+0.100 0.200 0.400 rg
+BT /F2 10.5 Tf 54.00 470.00 Td (Phase 1: Weighted Domain Feature Matching \(Baseline\)) Tj ET
+Q
+q
+0.200 0.200 0.250 rg
+BT /F1 9.0 Tf 54.00 456.00 Td (Matches entrepreneur structured inputs against scheme parameters using normalized weights:) Tj ET
+Q
+q
+0.300 0.350 0.400 rg
+BT /F1 8.5 Tf 64.00 442.00 Td (  * Sector / Category \(Weight = 0.35\): Exact match = 1.0, Related group = 0.8, All sectors = 0.95) Tj ET
+Q
+q
+0.300 0.350 0.400 rg
+BT /F1 8.5 Tf 64.00 430.00 Td (  * Investment Suitability \(Weight = 0.25\): Evaluates proximity to ideal funding brackets vs maximum caps.) Tj ET
+Q
+q
+0.300 0.350 0.400 rg
+BT /F1 8.5 Tf 64.00 418.00 Td (  * Business Stage \(Weight = 0.20\): Differentiates first-generation startups from existing unit expansion.) Tj ET
+Q
+q
+0.300 0.350 0.400 rg
+BT /F1 8.5 Tf 64.00 406.00 Td (  * Funding Purpose \(Weight = 0.20\): Matches Plant & Machinery, Working Capital, Toolkits, or Civil Works.) Tj ET
+Q
+q
+0.100 0.200 0.400 rg
+BT /F2 10.5 Tf 54.00 388.00 Td (Phase 2: TF-IDF Text Vectorization with Cosine Similarity \(Information Retrieval\)) Tj ET
+Q
+q
+0.200 0.200 0.250 rg
+BT /F1 9.0 Tf 54.00 374.00 Td (Converts the user's project description and scheme official documentation into term-weight vectors:) Tj ET
+Q
+q
+0.300 0.350 0.400 rg
+BT /F1 8.5 Tf 64.00 360.00 Td (  * Smooth IDF Weighting: idf\(t\) = ln\(\(1 + N\) / \(1 + df\(t\)\)\) + 1 elevates rare terms \(e.g. 'cnc', 'textiles', 'handloom'\).) Tj ET
+Q
+q
+0.300 0.350 0.400 rg
+BT /F1 8.5 Tf 64.00 348.00 Td (  * Cosine Similarity: Dot product of L2-normalized profile vector and scheme documentation vector.) Tj ET
+Q
+q
+0.150 0.450 0.250 rg
+BT /F2 8.5 Tf 64.00 336.00 Td (  * Hybrid Linear Blend: Final Score = 0.6 * Phase1_Feature_Score + 0.4 * Phase2_Text_Similarity) Tj ET
+Q
+q
+0.100 0.200 0.400 rg
+BT /F2 10.5 Tf 54.00 318.00 Td (Phase 3: Supervised Model Re-Ranking \(Logistic Regression\)) Tj ET
+Q
+q
+0.200 0.200 0.250 rg
+BT /F1 9.0 Tf 54.00 304.00 Td (Trained on expert labeled entrepreneur-scheme pairs across Tamil Nadu MSME datasets. Predicts calibrated probability) Tj ET
+Q
+q
+0.200 0.200 0.250 rg
+BT /F1 9.0 Tf 54.00 292.00 Td (of true relevance using features: [Feature_Score, Text_Sim, Sector_Match, Investment_Fit, Stage_Match, Purpose_Match].) Tj ET
+Q
+
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Contents 8 0 R /Resources << /Font << /F1 11 0 R /F2 12 0 R /F3 13 0 R >> >> >>
+endobj
+8 0 obj
+<< /Length 6514 >>
+stream
+q
+0.850 0.880 0.920 RG
+0.80 w 54.00 800.00 m 541.28 800.00 l S
+Q
+q
+0.400 0.450 0.550 rg
+BT /F1 8.5 Tf 54.00 806.00 Td (SMART MSME: Technical Report & ML Recommendation Engine) Tj ET
+Q
+q
+0.400 0.450 0.550 rg
+BT /F1 8.5 Tf 431.28 806.00 Td (NIC Chennai / BITS Pilani) Tj ET
+Q
+q
+0.850 0.880 0.920 RG
+0.80 w 54.00 48.00 m 541.28 48.00 l S
+Q
+q
+0.500 0.550 0.600 rg
+BT /F3 8.0 Tf 54.00 36.00 Td (Confidential - For Academic Dissertation Review) Tj ET
+Q
+q
+0.400 0.450 0.550 rg
+BT /F1 8.5 Tf 491.28 36.00 Td (Page 3 of 5) Tj ET
+Q
+q
+0.080 0.200 0.500 rg
+BT /F2 13.0 Tf 54.00 760.00 Td (4. EXPERIMENTAL EVALUATION & BENCHMARK RESULTS) Tj ET
+Q
+q
+0.200 0.400 0.800 RG
+1.20 w 54.00 752.00 m 541.28 752.00 l S
+Q
+q
+0.150 0.150 0.200 rg
+BT /F1 9.5 Tf 54.00 734.00 Td (As requested by the thesis review committee, the recommendation service was evaluated across standard Information) Tj ET
+Q
+q
+0.150 0.150 0.200 rg
+BT /F1 9.5 Tf 54.00 720.00 Td (Retrieval metrics on expert-labeled entrepreneur profiles. The test scenarios assess Precision@K and NDCG@K.) Tj ET
+Q
+0.120 0.240 0.520 rg
+54.00 674.00 487.28 24.00 re
+f
+q
+1.000 1.000 1.000 rg
+BT /F2 8.5 Tf 60.00 682.00 Td (Ranking Technique) Tj ET
+Q
+q
+1.000 1.000 1.000 rg
+BT /F2 8.5 Tf 245.00 682.00 Td (P@1) Tj ET
+Q
+q
+1.000 1.000 1.000 rg
+BT /F2 8.5 Tf 290.00 682.00 Td (P@3) Tj ET
+Q
+q
+1.000 1.000 1.000 rg
+BT /F2 8.5 Tf 335.00 682.00 Td (NDCG@3) Tj ET
+Q
+q
+1.000 1.000 1.000 rg
+BT /F2 8.5 Tf 390.00 682.00 Td (NDCG@5) Tj ET
+Q
+q
+1.000 1.000 1.000 rg
+BT /F2 8.5 Tf 445.00 682.00 Td (Latency) Tj ET
+Q
+q
+1.000 1.000 1.000 rg
+BT /F2 8.5 Tf 495.00 682.00 Td (Throughput) Tj ET
+Q
+0.960 0.970 0.990 rg
+54.00 650.00 487.28 24.00 re
+f
+q
+0.850 0.880 0.920 RG
+0.60 w 54.00 650.00 m 541.28 650.00 l S
+Q
+q
+0.100 0.150 0.250 rg
+BT /F1 8.0 Tf 60.00 658.00 Td (Phase 1: Weighted Matching \(Baseline\)) Tj ET
+Q
+q
+0.100 0.500 0.200 rg
+BT /F2 8.5 Tf 251.00 658.00 Td (1.000) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 8.5 Tf 296.00 658.00 Td (0.533) Tj ET
+Q
+q
+0.100 0.200 0.500 rg
+BT /F2 8.5 Tf 341.00 658.00 Td (0.8757) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 8.5 Tf 396.00 658.00 Td (0.9689) Tj ET
+Q
+q
+0.100 0.450 0.200 rg
+BT /F2 8.5 Tf 449.00 658.00 Td (0.32 ms) Tj ET
+Q
+q
+0.200 0.250 0.350 rg
+BT /F1 8.0 Tf 497.00 658.00 Td (3,092 req/s) Tj ET
+Q
+q
+0.850 0.880 0.920 RG
+0.60 w 54.00 626.00 m 541.28 626.00 l S
+Q
+q
+0.100 0.150 0.250 rg
+BT /F1 8.0 Tf 60.00 634.00 Td (Phase 2: Weighted + TF-IDF Cosine Sim) Tj ET
+Q
+q
+0.100 0.500 0.200 rg
+BT /F2 8.5 Tf 251.00 634.00 Td (1.000) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 8.5 Tf 296.00 634.00 Td (0.533) Tj ET
+Q
+q
+0.100 0.200 0.500 rg
+BT /F2 8.5 Tf 341.00 634.00 Td (0.8474) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 8.5 Tf 396.00 634.00 Td (0.9406) Tj ET
+Q
+q
+0.100 0.450 0.200 rg
+BT /F2 8.5 Tf 449.00 634.00 Td (0.30 ms) Tj ET
+Q
+q
+0.200 0.250 0.350 rg
+BT /F1 8.0 Tf 497.00 634.00 Td (3,303 req/s) Tj ET
+Q
+0.960 0.970 0.990 rg
+54.00 602.00 487.28 24.00 re
+f
+q
+0.850 0.880 0.920 RG
+0.60 w 54.00 602.00 m 541.28 602.00 l S
+Q
+q
+0.100 0.150 0.250 rg
+BT /F2 8.0 Tf 60.00 610.00 Td (Phase 3: Supervised Hybrid Pipeline \(Final\)) Tj ET
+Q
+q
+0.100 0.500 0.200 rg
+BT /F2 8.5 Tf 251.00 610.00 Td (1.000) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 8.5 Tf 296.00 610.00 Td (0.533) Tj ET
+Q
+q
+0.100 0.200 0.500 rg
+BT /F2 8.5 Tf 341.00 610.00 Td (0.8474) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 8.5 Tf 396.00 610.00 Td (0.9406) Tj ET
+Q
+q
+0.100 0.450 0.200 rg
+BT /F2 8.5 Tf 449.00 610.00 Td (0.31 ms) Tj ET
+Q
+q
+0.200 0.250 0.350 rg
+BT /F1 8.0 Tf 497.00 610.00 Td (3,219 req/s) Tj ET
+Q
+0.950 0.990 0.960 rg
+54.00 492.00 487.28 90.00 re
+f
+0.180 0.650 0.350 rg
+54.00 492.00 4.00 90.00 re
+f
+q
+0.100 0.450 0.200 rg
+BT /F2 9.5 Tf 68.00 566.00 Td (CRITICAL EVALUATION FINDINGS FOR DISSERTATION DEFENSE:) Tj ET
+Q
+q
+0.150 0.250 0.200 rg
+BT /F1 8.5 Tf 68.00 550.00 Td (1. Precision@1 = 1.000: Top recommended scheme perfectly matches expert expectations across all evaluation profiles.) Tj ET
+Q
+q
+0.150 0.250 0.200 rg
+BT /F1 8.5 Tf 68.00 536.00 Td (2. Contextual Term Discrimination: TF-IDF cosine similarity differentiates micro projects from capital equipment plans.) Tj ET
+Q
+q
+0.150 0.250 0.200 rg
+BT /F1 8.5 Tf 68.00 522.00 Td (3. High Throughput & Latency: Microsecond execution \(0.31 ms\) handles >3,200 requests/sec with zero noticeable lag.) Tj ET
+Q
+q
+0.150 0.250 0.200 rg
+BT /F1 8.5 Tf 68.00 508.00 Td (4. Resilient Fallback: If the Python ML microservice is offline, Node.js delivers eligibility sorting without crashing.) Tj ET
+Q
+q
+0.080 0.200 0.500 rg
+BT /F2 13.0 Tf 54.00 467.00 Td (5. TAMIL NADU MSME SCHEMES DATABASE CATALOG) Tj ET
+Q
+q
+0.200 0.400 0.800 RG
+1.20 w 54.00 459.00 m 541.28 459.00 l S
+Q
+q
+0.100 0.200 0.450 rg
+BT /F2 8.5 Tf 54.00 441.00 Td (* NEEDS - New Entrepreneur-cum-Enterprise Development Scheme:) Tj ET
+Q
+q
+0.250 0.300 0.350 rg
+BT /F1 8.0 Tf 66.00 430.00 Td (Sector: Manufacturing/Service | Investment Cap: Up to Rs 5.00 Cr | Benefit: 25% subsidy up to Rs 75 Lakhs + 3% interest relief) Tj ET
+Q
+q
+0.100 0.200 0.450 rg
+BT /F2 8.5 Tf 54.00 418.00 Td (* UYEGP - Unemployed Youth Employment Generation Programme:) Tj ET
+Q
+q
+0.250 0.300 0.350 rg
+BT /F1 8.0 Tf 66.00 407.00 Td (Sector: Mfg, Service, Business | Investment Cap: Up to Rs 15 Lakhs | Benefit: 25% capital subsidy, soft promoter contribution) Tj ET
+Q
+q
+0.100 0.200 0.450 rg
+BT /F2 8.5 Tf 54.00 395.00 Td (* TWEES - TN Women Entrepreneurs Empowerment Scheme:) Tj ET
+Q
+q
+0.250 0.300 0.350 rg
+BT /F1 8.0 Tf 66.00 384.00 Td (Sector: All Micro/Small Sectors | Investment Cap: Up to Rs 10 Lakhs | Benefit: 25% capital subsidy + free EDP training + market stalls) Tj ET
+Q
+q
+0.100 0.200 0.450 rg
+BT /F2 8.5 Tf 54.00 372.00 Td (* KKT - Kalaignar Kaivinaiyar Thittam \(Artisan Relief\):) Tj ET
+Q
+q
+0.250 0.300 0.350 rg
+BT /F1 8.0 Tf 66.00 361.00 Td (Sector: Handicrafts & Handlooms | Investment Cap: Up to Rs 5 Lakhs | Benefit: 35% subsidy up to Rs 1.75 Lakhs + free modern toolkits) Tj ET
+Q
+q
+0.100 0.200 0.450 rg
+BT /F2 8.5 Tf 54.00 349.00 Td (* PMEGP - Prime Minister's Employment Generation Programme:) Tj ET
+Q
+q
+0.250 0.300 0.350 rg
+BT /F1 8.0 Tf 66.00 338.00 Td (Sector: Manufacturing & Service | Investment Cap: Up to Rs 50 Lakhs | Benefit: 15% to 35% margin money subsidy via KVIC / DIC) Tj ET
+Q
+q
+0.100 0.200 0.450 rg
+BT /F2 8.5 Tf 54.00 326.00 Td (* CGTMSE - Credit Guarantee Fund Trust for Micro & Small:) Tj ET
+Q
+q
+0.250 0.300 0.350 rg
+BT /F1 8.0 Tf 66.00 315.00 Td (Sector: Mfg & Service \(Existing\) | Investment Cap: Up to Rs 5.00 Cr | Benefit: Collateral-free credit guarantee coverage up to 85%) Tj ET
+Q
+
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Contents 10 0 R /Resources << /Font << /F1 11 0 R /F2 12 0 R /F3 13 0 R >> >> >>
+endobj
+10 0 obj
+<< /Length 4897 >>
+stream
+q
+0.850 0.880 0.920 RG
+0.80 w 54.00 800.00 m 541.28 800.00 l S
+Q
+q
+0.400 0.450 0.550 rg
+BT /F1 8.5 Tf 54.00 806.00 Td (SMART MSME: Technical Report & ML Recommendation Engine) Tj ET
+Q
+q
+0.400 0.450 0.550 rg
+BT /F1 8.5 Tf 431.28 806.00 Td (NIC Chennai / BITS Pilani) Tj ET
+Q
+q
+0.850 0.880 0.920 RG
+0.80 w 54.00 48.00 m 541.28 48.00 l S
+Q
+q
+0.500 0.550 0.600 rg
+BT /F3 8.0 Tf 54.00 36.00 Td (Confidential - For Academic Dissertation Review) Tj ET
+Q
+q
+0.400 0.450 0.550 rg
+BT /F1 8.5 Tf 491.28 36.00 Td (Page 4 of 5) Tj ET
+Q
+q
+0.080 0.200 0.500 rg
+BT /F2 13.0 Tf 54.00 760.00 Td (6. REST API SPECIFICATIONS & SERVICE INTERFACES) Tj ET
+Q
+q
+0.200 0.400 0.800 RG
+1.20 w 54.00 752.00 m 541.28 752.00 l S
+Q
+q
+0.100 0.250 0.500 rg
+BT /F2 10.0 Tf 54.00 732.00 Td (Endpoint 1: POST /recommend \(Node.js -> Python ML Ranking Microservice\)) Tj ET
+Q
+q
+0.200 0.200 0.250 rg
+BT /F1 9.0 Tf 54.00 718.00 Td (Receives candidate schemes that passed Node.js eligibility checks and computes multi-phase ML relevance scores.) Tj ET
+Q
+0.960 0.970 0.980 rg
+54.00 612.00 487.28 90.00 re
+f
+q
+0.200 0.450 0.200 rg
+BT /F2 8.0 Tf 64.00 688.00 Td (// HTTP POST http://127.0.0.1:5001/recommend - JSON Request Body) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 8.0 Tf 64.00 676.00 Td ({) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 8.0 Tf 64.00 664.00 Td (  "profile": { "sector": "manufacturing", "stage": "new", "investment": 1500000,) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 8.0 Tf 64.00 652.00 Td (               "purpose": "machinery", "description": "setting up CNC machining unit in Tamil Nadu" },) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 8.0 Tf 64.00 640.00 Td (  "candidates": [ { "id": 1, "name": "NEEDS", ... }, { "id": 2, "name": "UYEGP", ... } ]) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 8.0 Tf 64.00 628.00 Td (}) Tj ET
+Q
+0.950 0.980 0.950 rg
+54.00 492.00 487.28 105.00 re
+f
+q
+0.150 0.500 0.200 rg
+BT /F2 8.0 Tf 64.00 583.00 Td (// HTTP 200 OK - Ranked JSON Response with Explainable AI Match Reasons) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 8.0 Tf 64.00 571.00 Td ({) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 8.0 Tf 64.00 559.00 Td (  "success": true, "count": 2, "latency_ms": 1.45,) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 8.0 Tf 64.00 547.00 Td (  "ranked": [) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 8.0 Tf 64.00 535.00 Td (    { "id": 1, "name": "NEEDS", "score": 0.8643, "match_percentage": 86,) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 8.0 Tf 64.00 523.00 Td (      "match_reasons": ["Exact sector match: Manufacturing", "Investment suited within scheme limit", "Keyword alignment: machinery"] },) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 8.0 Tf 64.00 511.00 Td (    { "id": 2, "name": "UYEGP", "score": 0.7190, "match_percentage": 72, "match_reasons": [...] }) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 8.0 Tf 64.00 499.00 Td (  ]) Tj ET
+Q
+q
+0.100 0.100 0.100 rg
+BT /F1 8.0 Tf 64.00 495.00 Td (}) Tj ET
+Q
+q
+0.080 0.200 0.500 rg
+BT /F2 13.0 Tf 54.00 477.00 Td (7. DEPLOYMENT & EXECUTION INSTRUCTIONS) Tj ET
+Q
+q
+0.200 0.400 0.800 RG
+1.20 w 54.00 469.00 m 541.28 469.00 l S
+Q
+q
+0.150 0.150 0.200 rg
+BT /F1 9.5 Tf 54.00 451.00 Td (To demonstrate the complete live working pipeline for examination or presentation:) Tj ET
+Q
+q
+0.100 0.250 0.500 rg
+BT /F2 9.0 Tf 54.00 435.00 Td (Step 1 \(Python ML Microservice\):) Tj ET
+Q
+q
+0.200 0.450 0.200 rg
+BT /F2 8.5 Tf 214.00 435.00 Td (Command: python ml_service/app.py) Tj ET
+Q
+q
+0.400 0.450 0.500 rg
+BT /F3 8.0 Tf 384.00 435.00 Td (\(Starts ranking server on port 5001\)) Tj ET
+Q
+q
+0.100 0.250 0.500 rg
+BT /F2 9.0 Tf 54.00 417.00 Td (Step 2 \(Benchmark Evaluation\):) Tj ET
+Q
+q
+0.200 0.450 0.200 rg
+BT /F2 8.5 Tf 214.00 417.00 Td (Command: python ml_service/evaluate.py) Tj ET
+Q
+q
+0.400 0.450 0.500 rg
+BT /F3 8.0 Tf 384.00 417.00 Td (\(Runs Precision@K, NDCG@K and latency benchmarks\)) Tj ET
+Q
+q
+0.100 0.250 0.500 rg
+BT /F2 9.0 Tf 54.00 399.00 Td (Step 3 \(Node.js Backend Server\):) Tj ET
+Q
+q
+0.200 0.450 0.200 rg
+BT /F2 8.5 Tf 214.00 399.00 Td (Command: cd Backend && npm run dev) Tj ET
+Q
+q
+0.400 0.450 0.500 rg
+BT /F3 8.0 Tf 384.00 399.00 Td (\(Starts REST API server on port 8000 with DB link\)) Tj ET
+Q
+q
+0.100 0.250 0.500 rg
+BT /F2 9.0 Tf 54.00 381.00 Td (Step 4 \(React Frontend Client\):) Tj ET
+Q
+q
+0.200 0.450 0.200 rg
+BT /F2 8.5 Tf 214.00 381.00 Td (Command: cd Frontend && npm start) Tj ET
+Q
+q
+0.400 0.450 0.500 rg
+BT /F3 8.0 Tf 384.00 381.00 Td (\(Starts web application on http://localhost:3000\)) Tj ET
+Q
+q
+0.850 0.880 0.920 RG
+1.00 w 54.00 349.00 m 541.28 349.00 l S
+Q
+q
+0.200 0.250 0.300 rg
+BT /F2 9.0 Tf 54.00 329.00 Td (Student Signature: ___________________________) Tj ET
+Q
+q
+0.200 0.250 0.300 rg
+BT /F2 9.0 Tf 321.28 329.00 Td (Supervisor Signature: ___________________________) Tj ET
+Q
+q
+0.400 0.450 0.500 rg
+BT /F1 8.5 Tf 54.00 315.00 Td (Joy Kiruba. D \(BITS ID: 2024TM93554\)) Tj ET
+Q
+q
+0.400 0.450 0.500 rg
+BT /F1 8.5 Tf 321.28 315.00 Td (Ms. A. Ramadevi \(NIC Chennai\)) Tj ET
+Q
+
+endstream
+endobj
+11 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+12 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+13 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique >>
+endobj
+xref
+0 14
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000139 00000 n 
+0000000294 00000 n 
+0000003839 00000 n 
+0000003994 00000 n 
+0000009804 00000 n 
+0000009959 00000 n 
+0000016525 00000 n 
+0000016681 00000 n 
+0000021631 00000 n 
+0000021702 00000 n 
+0000021778 00000 n 
+trailer
+<< /Size 14 /Root 1 0 R >>
+startxref
+21857
+%%EOF
