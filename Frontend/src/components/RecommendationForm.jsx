@@ -7,6 +7,9 @@ const SchemeRecommendationForm = ({ onRecommendations, onLoading }) => {
     age: '',
     gender: '',
     business_category: '',
+    stage: 'new',
+    purpose: 'machinery',
+    description: '',
     investment: '',
     location: '',
     social_category: '',
@@ -88,6 +91,10 @@ const SchemeRecommendationForm = ({ onRecommendations, onLoading }) => {
         age: parseInt(formData.age, 10),
         gender: formData.gender,
         business_category: formData.business_category,
+        sector: formData.business_category,
+        stage: formData.stage || 'new',
+        purpose: formData.purpose || 'machinery',
+        description: formData.description || '',
         investment: parseInt(formData.investment, 10),
         location: formData.location,
         social_category: formData.social_category || null,
@@ -162,11 +169,10 @@ const SchemeRecommendationForm = ({ onRecommendations, onLoading }) => {
         )}
 
         {/* Personal Information Section */}
-        <fieldset className="form-section">
-          <legend className="section-title">
-            <span className="section-icon"></span>
+        <div className="form-section">
+          <h3 className="section-title">
             Personal Information
-          </legend>
+          </h3>
           <div className="form-grid">
             {/* Age */}
             <div className="form-group">
@@ -251,14 +257,13 @@ const SchemeRecommendationForm = ({ onRecommendations, onLoading }) => {
               <span className="field-hint">Schemes may have special benefits for your category</span>
             </div>
           </div>
-        </fieldset>
+        </div>
 
         {/* Business Information Section */}
-        <fieldset className="form-section">
-          <legend className="section-title">
-            <span className="section-icon"></span>
+        <div className="form-section">
+          <h3 className="section-title">
             Business Information
-          </legend>
+          </h3>
           <div className="form-grid">
             {/* Business Category */}
             <div className="form-group">
@@ -357,15 +362,66 @@ const SchemeRecommendationForm = ({ onRecommendations, onLoading }) => {
               {errors.location && <span className="error-text">{errors.location}</span>}
               <span className="field-hint">Many schemes are state-specific</span>
             </div>
+
+            {/* Business Stage */}
+            <div className="form-group">
+              <label htmlFor="stage">
+                Business Stage
+              </label>
+              <select
+                id="stage"
+                name="stage"
+                value={formData.stage}
+                onChange={handleInputChange}
+              >
+                <option value="new">New Enterprise (First-Gen Startup)</option>
+                <option value="existing">Existing Enterprise (Expansion)</option>
+              </select>
+              <span className="field-hint">Helps match schemes for new vs existing units</span>
+            </div>
+
+            {/* Funding Purpose */}
+            <div className="form-group">
+              <label htmlFor="purpose">
+                Funding Purpose
+              </label>
+              <select
+                id="purpose"
+                name="purpose"
+                value={formData.purpose}
+                onChange={handleInputChange}
+              >
+                <option value="machinery">Plant, Machinery & Equipment</option>
+                <option value="working_capital">Working Capital & Raw Materials</option>
+                <option value="expansion">Infrastructure Expansion</option>
+                <option value="equipment">Artisanal Toolkits / Modernization</option>
+              </select>
+              <span className="field-hint">Primary purpose for requesting financial assistance</span>
+            </div>
+
+            {/* Project Description (TF-IDF Text Matching) */}
+            <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+              <label htmlFor="description">
+                Project / Business Description <span className="optional">(for AI Keyword Matching)</span>
+              </label>
+              <input
+                type="text"
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                placeholder="e.g. Setting up precision CNC manufacturing machinery in Coimbatore, Tamil Nadu"
+              />
+              <span className="field-hint">AI uses TF-IDF similarity to match your project activities with scheme guidelines</span>
+            </div>
           </div>
-        </fieldset>
+        </div>
 
         {/* Financial Information Section */}
-        <fieldset className="form-section">
-          <legend className="section-title">
-            <span className="section-icon"></span>
+        <div className="form-section">
+          <h3 className="section-title">
             Financial Information <span className="optional">(optional)</span>
-          </legend>
+          </h3>
           <div className="form-grid">
             {/* Income */}
             <div className="form-group">
@@ -406,7 +462,7 @@ const SchemeRecommendationForm = ({ onRecommendations, onLoading }) => {
               <span className="field-hint">Highest educational qualification</span>
             </div>
           </div>
-        </fieldset>
+        </div>
 
         {/* Form Actions */}
         <div className="form-actions">

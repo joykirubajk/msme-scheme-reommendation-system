@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { schemeAPI, collectionAPI, authAPI } from "../services/api";
-import Profile from "../components/Profile.jsx";
+import Header from "../components/Header.jsx";
 import SchemeDetails from "../components/SchemeDetails.jsx";
 import "../styles/Homepage.css";
 
@@ -120,10 +121,14 @@ function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout }) {
     // Search is handled by useEffect, no need to do anything here
   };
 
+  const navigate = useNavigate();
+
   const handleStartRecommendation = () => {
-    if (onFindSchemes) {
-      onFindSchemes();
+    if (!isLoggedIn && !authAPI.isLoggedIn()) {
+      navigate('/signin');
+      return;
     }
+    navigate('/recommend');
   };
 
   const handleLearnMore = (scheme) => {
@@ -147,65 +152,16 @@ function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout }) {
   return (
     <div id="home" className="home">
 
-      {/* Header*/}
-
-      <header className="header">
-        <div className="header-wrapper">
-          <div className="logo-section">
-            <div className="logo">
-              <img src="/msme logo.png" alt="MSME Logo" className="logo-icon" />
-              <h1 className="logo-text">MSME Schemes</h1>
-            </div>
-          </div>
-
-          <form className="search-form" onSubmit={handleSearch}>
-            <input
-              className="search-input"
-              type="search"
-              placeholder="Search schemes by name..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <button className="search-btn" type="submit">
-              🔍 
-            </button>
-          </form>
-
-          <nav className="nav">
-            <a className="nav-link" href="#home">
-              Home
-            </a>
-            <a className="nav-link" href="#schemes">
-              Schemes
-            </a>
-            <a className="nav-link" href="#how-it-works">
-              How It Works
-            </a>
-            <a className="nav-link" href="#contact">
-              Contact
-            </a>
-          </nav>
-
-          {isLoggedIn && user ? (
-            <div className="auth-section">
-              <span className="user-greeting">Welcome, {user.name}</span>
-              <Profile
-                isLoggedIn={isLoggedIn} 
-                user={user} 
-                onNavigate={onNavigate} 
-                onLogout={onLogout} 
-              />
-            </div>
-          ) : (
-            <Profile
-              isLoggedIn={isLoggedIn} 
-              user={user} 
-              onNavigate={onNavigate} 
-              onLogout={onLogout} 
-            />
-          )}
-        </div>
-      </header>
+      {/* Unified Global Header */}
+      <Header
+        isLoggedIn={isLoggedIn}
+        user={user}
+        onLogout={onLogout}
+        onNavigate={onNavigate}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        onSearch={handleSearch}
+      />
 
       {/* Hero Section */}
       <section className="hero">

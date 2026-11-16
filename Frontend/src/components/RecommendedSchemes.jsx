@@ -74,13 +74,37 @@ const RecommendedSchemes = ({ schemes, isLoading }) => {
 
           return (
             <div key={scheme.id} className="scheme-card">
-              {/* Badge */}
+              {/* ML Rank Badge & Match Score */}
               <div className="card-badge">
-                <span className="badge-eligible"> Perfect Match</span>
+                <span className="badge-eligible">
+                  {scheme.ranking_score ? `Rank #${schemes.indexOf(scheme) + 1} • ${scheme.match_percentage || Math.round(scheme.ranking_score * 100)}% Match` : 'Eligible Match'}
+                </span>
               </div>
 
               {/* Title */}
               <h3 className="scheme-title">{scheme.name}</h3>
+
+              {/* ML Explainable Match Reasons */}
+              {scheme.match_reasons && scheme.match_reasons.length > 0 && (
+                <div className="ml-match-reasons-box" style={{
+                  background: '#f0fdf4',
+                  border: '1px solid #bbf7d0',
+                  borderRadius: '8px',
+                  padding: '10px 14px',
+                  marginBottom: '14px',
+                  fontSize: '12.5px',
+                  color: '#166534'
+                }}>
+                  <div style={{ fontWeight: '600', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span>🤖 AI Recommendation Reason:</span>
+                  </div>
+                  <ul style={{ margin: 0, paddingLeft: '18px' }}>
+                    {scheme.match_reasons.map((reason, idx) => (
+                      <li key={idx} style={{ margin: '2px 0' }}>{reason}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               {/* Description */}
               <div className="description-box">

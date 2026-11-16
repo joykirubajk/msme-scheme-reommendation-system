@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import HomePage from './Home/Homepage.jsx';
+import RecommendationPage from './pages/RecommendationPage.jsx';
 import SignIn from './components/SignIn.jsx';
 import SignUp from './components/SignUp.jsx';
 import ForgotPassword from './components/ForgotPassword.jsx';
-import RecommendationForm from './components/RecommendationForm.jsx';
-import RecommendedSchemes from './components/RecommendedSchemes.jsx';
 import { authAPI } from './services/api';
 import './styles/App.css';
 
-function App() {
-  const [currentPage, setCurrentPage] = useState('home');
-  const [recommendations, setRecommendations] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [showRecommendationForm, setShowRecommendationForm] = useState(false);
+function AppContent() {
+  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -20,106 +17,104 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     const storedUser = localStorage.getItem('user');
-    
+
     if (token && storedUser) {
-      setIsLoggedIn(true);
-      setUser(JSON.parse(storedUser));
+      try {
+        setIsLoggedIn(true);
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        setIsLoggedIn(false);
+        setUser(null);
+      }
     }
   }, []);
-
-  const handleShowRecommendation = () => {
-    if (!isLoggedIn) {
-      setCurrentPage('signin');
-      return;
-    }
-    
-    setShowRecommendationForm(true);
-    setTimeout(() => {
-      const element = document.getElementById('recommendation');
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100);
-  };
 
   const handleLoginSuccess = (userData) => {
     setIsLoggedIn(true);
     setUser(userData);
-    setCurrentPage('home');
+    navigate('/');
   };
 
   const handleSignupSuccess = (userData) => {
     setIsLoggedIn(true);
     setUser(userData);
-    setCurrentPage('home');
+    navigate('/');
   };
 
   const handleLogout = () => {
     authAPI.logout();
     setIsLoggedIn(false);
     setUser(null);
-    setCurrentPage('home');
+    navigate('/');
   };
 
   const handleNavigate = (page) => {
-    setCurrentPage(page);
+    if (page === 'home') navigate('/');
+    else navigate('/' + page);
     window.scrollTo(0, 0);
   };
 
-
   return (
-    <div className="App">
-      {currentPage === 'home' && (
-        <>
-          <HomePage 
-            onFindSchemes={handleShowRecommendation}
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <HomePage
             isLoggedIn={isLoggedIn}
             user={user}
             onNavigate={handleNavigate}
             onLogout={handleLogout}
           />
+        }
+      />
+      <Route
+        path="/recommend"
+        element={
+          <RecommendationPage
+            isLoggedIn={isLoggedIn}
+            user={user}
+            onLogout={handleLogout}
+          />
+        }
+      />
+      <Route
+        path="/signin"
+        element={
+          <SignIn
+            onLoginSuccess={handleLoginSuccess}
+            onNavigate={handleNavigate}
+          />
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          <SignUp
+            onSignupSuccess={handleSignupSuccess}
+            onNavigate={handleNavigate}
+          />
+        }
+      />
+      <Route
+        path="/forgot-password"
+        element={
+          <ForgotPassword
+            onNavigate={handleNavigate}
+          />
+        }
+      />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+}
 
-          {showRecommendationForm && (
-            <section id="recommendation" className="recommendation-section">
-              <div className="recommendation-container">
-                <div className="recommendation-header">
-                  <h2>Find Schemes Tailored For You</h2>
-                  <p>Answer a few simple questions about your business, and we'll recommend the best schemes for you</p>
-                </div>
-
-                <div className="recommendation-content">
-                  <RecommendationForm
-                    onRecommendations={setRecommendations}
-                    onLoading={setIsLoading}
-                  />
-                  <RecommendedSchemes schemes={recommendations} isLoading={isLoading} />
-                </div>
-              </div>
-            </section>
-          )}
-        </>
-      )}
-
-      {currentPage === 'signin' && (
-        <SignIn 
-          onLoginSuccess={handleLoginSuccess}
-          onNavigate={handleNavigate}
-        />
-      )}
-
-      {currentPage === 'signup' && (
-        <SignUp 
-          onSignupSuccess={handleSignupSuccess}
-          onNavigate={handleNavigate}
-        />
-      )}
-
-      {currentPage === 'forgot-password' && (
-        <ForgotPassword 
-          onNavigate={handleNavigate}
-        />
-      )}
-    </div>
+function App() {
+  return (
+    <BrowserRouter>
+      <div className="App">
+        <AppContent />
+      </div>
+    </BrowserRouter>
   );
 }
 
