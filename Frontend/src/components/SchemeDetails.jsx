@@ -1,7 +1,7 @@
 import React from 'react';
 import '../styles/SchemeDetails.css';
 
-const SchemeDetails = ({ scheme, onBack }) => {
+const SchemeDetails = ({ scheme, onBack, isSaved, onToggleSave, isSaving }) => {
   const categoryLabels = {
     'sc_st': 'SC/ST',
     'transgender': 'Transgender Persons',
@@ -73,11 +73,35 @@ const SchemeDetails = ({ scheme, onBack }) => {
 
       <div className="scheme-details-card">
         {/* Header Section */}
-        <div className="details-header">
+        <div className="details-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
           <div className="header-content">
             <h1>{scheme.name}</h1>
             <span className="eligible-badge">✓ Eligible for you</span>
           </div>
+          {onToggleSave && (
+            <button
+              type="button"
+              className={`details-save-btn ${isSaved ? 'saved' : ''}`}
+              onClick={onToggleSave}
+              disabled={isSaving}
+              style={{
+                padding: '10px 18px',
+                borderRadius: '8px',
+                border: '1.5px solid #667eea',
+                background: isSaved ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : 'white',
+                color: isSaved ? 'white' : '#667eea',
+                cursor: 'pointer',
+                fontWeight: '600',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '14px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+              }}
+            >
+              {isSaving ? '⟳ Saving...' : isSaved ? '✓ Saved Scheme' : '🔖 Save Scheme'}
+            </button>
+          )}
         </div>
 
         {/* Description - Simplified */}
@@ -287,9 +311,31 @@ const SchemeDetails = ({ scheme, onBack }) => {
         <div className="cta-section">
           <h3>Ready to Apply?</h3>
           <p>This program is perfectly suited for your business. Start your application today and get the financial support you need!</p>
-          <button className="btn btn-apply">
-            📝 Apply for This Program
-          </button>
+          <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap', margin: '20px 0 10px' }}>
+            <button className="btn btn-apply">
+              📝 Apply for This Program
+            </button>
+            {onToggleSave && (
+              <button
+                type="button"
+                className="btn"
+                onClick={onToggleSave}
+                disabled={isSaving}
+                style={{
+                  background: isSaved ? '#10b981' : '#667eea',
+                  color: 'white',
+                  border: 'none',
+                  padding: '14px 22px',
+                  borderRadius: '8px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  fontSize: '15px'
+                }}
+              >
+                {isSaving ? '⟳ Saving...' : isSaved ? '✓ Saved in Collection' : '🔖 Save for Later'}
+              </button>
+            )}
+          </div>
           <p className="cta-note">ℹ️ You'll be redirected to the official government website to complete your application</p>
         </div>
       </div>

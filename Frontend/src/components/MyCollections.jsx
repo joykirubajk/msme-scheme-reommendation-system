@@ -49,6 +49,7 @@ const MyCollections = ({ onClose, savedSchemes = [] }) => {
       const response = await collectionAPI.unsaveScheme(schemeId);
       if (response.success) {
         setSchemes(schemes.filter(s => s.id !== schemeId));
+        window.dispatchEvent(new CustomEvent('savedSchemesUpdated', { detail: { schemeId, action: 'unsave' } }));
       }
     } catch (err) {
       console.error('Error removing from collection:', err);

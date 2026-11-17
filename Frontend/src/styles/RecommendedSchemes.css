@@ -76,6 +76,87 @@
   margin-bottom: 12px;
 }
 
+.card-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.save-scheme-btn-rec {
+  background: white;
+  border: 1.5px solid #667eea;
+  color: #667eea;
+  font-size: 15px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.15);
+  flex-shrink: 0;
+}
+
+.save-scheme-btn-rec:hover:not(:disabled) {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #764ba2;
+  transform: scale(1.08);
+}
+
+.save-scheme-btn-rec.saved {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border-color: #059669;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.card-actions-row {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 14px;
+  align-items: center;
+}
+
+.card-actions-row .btn-details {
+  flex: 1;
+}
+
+.btn-save-action {
+  padding: 12px 16px;
+  background: white;
+  border: 1.5px solid #667eea;
+  color: #667eea;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+  margin-top: 10px;
+}
+
+.btn-save-action:hover:not(:disabled) {
+  background: #f5f3ff;
+  border-color: #764ba2;
+  color: #764ba2;
+}
+
+.btn-save-action.btn-saved {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border-color: #059669;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+}
+
 .badge-eligible {
   background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
   color: white;

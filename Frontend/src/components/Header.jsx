@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Profile from './Profile';
+import MyCollections from './MyCollections';
+import { collectionAPI, authAPI } from '../services/api';
 import '../styles/Homepage.css';
 
 function Header({
@@ -14,6 +16,30 @@ function Header({
 }) {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState(externalSearchQuery || '');
+  const [showSavedModal, setShowSavedModal] = useState(false);
+  const [savedCount, setSavedCount] = useState(0);
+
+  const fetchSavedCount = useCallback(async () => {
+    if (isLoggedIn || authAPI.isLoggedIn()) {
+      try {
+        const res = await collectionAPI.getSavedSchemes();
+        if (res?.data?.schemes) {
+          setSavedCount(res.data.schemes.length);
+        }
+      } catch (err) {
+        // silent fail if unauthorized
+      }
+    } else {
+      setSavedCount(0);
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    fetchSavedCount();
+    const handleUpdate = () => fetchSavedCount();
+    window.addEventListener('savedSchemesUpdated', handleUpdate);
+    return () => window.removeEventListener('savedSchemesUpdated', handleUpdate);
+  }, [fetchSavedCount]);
 
   useEffect(() => {
     if (externalSearchQuery !== undefined) {
@@ -49,6 +75,14 @@ function Header({
     }
   };
 
+  const handleOpenSavedSchemes = () => {
+    if (!isLoggedIn && !authAPI.isLoggedIn()) {
+      navigate('/signin');
+      return;
+    }
+    setShowSavedModal(true);
+  };
+
   return (
     <header className="header">
       <div className="header-wrapper">
@@ -78,6 +112,17 @@ function Header({
           <Link className="nav-link" to="/recommend" style={{ fontWeight: '700', color: '#fef08a' }}>
             ✨ AI Recommendation
           </Link>
+          <button
+            type="button"
+            className="nav-link saved-nav-link"
+            onClick={handleOpenSavedSchemes}
+            title="View your saved schemes"
+          >
+            📋 Saved Schemes
+            {savedCount > 0 && (
+              <span className="saved-badge-pill">{savedCount}</span>
+            )}
+          </button>
           <a className="nav-link" href="/#how-it-works">How It Works</a>
           <a className="nav-link" href="/#contact">Contact</a>
         </nav>
@@ -101,6 +146,16 @@ function Header({
           />
         )}
       </div>
+
+      {/* Global Saved Schemes Modal */}
+      {showSavedModal && (
+        <MyCollections
+          onClose={() => {
+            setShowSavedModal(false);
+            fetchSavedCount();
+          }}
+        />
+      )}
     </header>
   );
 }

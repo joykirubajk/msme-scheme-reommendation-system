@@ -72,6 +72,7 @@ function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout }) {
         await collectionAPI.saveScheme(scheme.id);
         setSavedSchemes([...savedSchemes, scheme]);
       }
+      window.dispatchEvent(new CustomEvent('savedSchemesUpdated', { detail: { schemeId: scheme.id } }));
     } catch (err) {
       console.error("Error toggling save scheme:", err);
     } finally {
@@ -107,6 +108,13 @@ function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout }) {
     if (isLoggedIn && authAPI.isLoggedIn()) {
       fetchSavedSchemes();
     }
+    const handleUpdate = () => {
+      if (authAPI.isLoggedIn()) {
+        fetchSavedSchemes();
+      }
+    };
+    window.addEventListener('savedSchemesUpdated', handleUpdate);
+    return () => window.removeEventListener('savedSchemesUpdated', handleUpdate);
   }, [isLoggedIn, fetchAllSchemes, fetchSavedSchemes]);
 
   // Filter schemes when search query or category changes
@@ -288,11 +296,11 @@ function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout }) {
                 <div key={scheme.id} className="scheme-card">
                   <button 
                     className={`save-scheme-btn ${savedSchemes.some(s => s.id === scheme.id) ? 'saved' : ''}`}
-                    title={savedSchemes.some(s => s.id === scheme.id) ? 'Remove from collection' : 'Add to collection'}
+                    title={savedSchemes.some(s => s.id === scheme.id) ? 'Remove from saved schemes' : 'Save to my schemes'}
                     onClick={() => handleToggleSaveScheme(scheme)}
                     disabled={savingSchemeId === scheme.id}
                   >
-                    {savingSchemeId === scheme.id ? '⟳' : '+'}
+                    {savingSchemeId === scheme.id ? '⟳' : savedSchemes.some(s => s.id === scheme.id) ? '✓' : '🔖'}
                   </button>
                   <div className="scheme-header">
                     <h3 className="scheme-name">{scheme.name}</h3>
@@ -456,7 +464,13 @@ function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout }) {
         <div className="scheme-details-modal-overlay" onClick={handleBackFromSchemeDetails}>
           <div className="scheme-details-modal" onClick={(e) => e.stopPropagation()}>
             <button className="scheme-details-close-btn" onClick={handleBackFromSchemeDetails}>✕</button>
-            <SchemeDetails scheme={selectedScheme} onBack={handleBackFromSchemeDetails} />
+            <SchemeDetails
+              scheme={selectedScheme}
+              onBack={handleBackFromSchemeDetails}
+              isSaved={savedSchemes.some(s => s.id === selectedScheme.id)}
+              onToggleSave={() => handleToggleSaveScheme(selectedScheme)}
+              isSaving={savingSchemeId === selectedScheme.id}
+            />
           </div>
         </div>
       )}

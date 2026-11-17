@@ -1,10 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import SchemeDetails from './SchemeDetails';
+import { collectionAPI, authAPI } from '../services/api';
 import '../styles/RecommendedSchemes.css';
 
 const RecommendedSchemes = ({ schemes, isLoading }) => {
   const [selectedScheme, setSelectedScheme] = useState(null);
   const [expandedSchemes, setExpandedSchemes] = useState({});
+  const [savedSchemeIds, setSavedSchemeIds] = useState(new Set());
+  const [savingId, setSavingId] = useState(null);
+
+  const fetchSavedStatus = useCallback(async () => {
+    if (authAPI.isLoggedIn()) {
+      try {
+        const res = await collectionAPI.getSavedSchemes();
+        const schemesList = res?.data?.schemes || [];
+        setSavedSchemeIds(new Set(schemesList.map((s) => s.id)));
+      } catch (err) {
+        // silent fail if unauthorized
+      }
+    } else {
+      setSavedSchemeIds(new Set());
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchSavedStatus();
+    const handleUpdate = () => fetchSavedStatus();
+    window.addEventListener('savedSchemesUpdated', handleUpdate);
+    return () => window.removeEventListener('savedSchemesUpdated', handleUpdate);
+  }, [fetchSavedStatus]);
+
+  const handleToggleSave = async (scheme) => {
+    if (!authAPI.isLoggedIn()) {
+      alert('Please sign in to save schemes to your personal collection.');
+      return;
+    }
+
+    const isSaved = savedSchemeIds.has(scheme.id);
+    setSavingId(scheme.id);
+
+    try {
+      if (isSaved) {
+        await collectionAPI.unsaveScheme(scheme.id);
+        setSavedSchemeIds((prev) => {
+          const next = new Set(prev);
+          next.delete(scheme.id);
+          return next;
+        });
+      } else {
+        await collectionAPI.saveScheme(scheme.id);
+        setSavedSchemeIds((prev) => new Set(prev).add(scheme.id));
+      }
+      window.dispatchEvent(new CustomEvent('savedSchemesUpdated', { detail: { schemeId: scheme.id } }));
+    } catch (err) {
+      console.error('Error toggling save scheme:', err);
+    } finally {
+      setSavingId(null);
+    }
+  };
 
   const toggleExpand = (schemeId) => {
     setExpandedSchemes((prev) => ({
@@ -54,6 +107,9 @@ const RecommendedSchemes = ({ schemes, isLoading }) => {
       <SchemeDetails
         scheme={selectedScheme}
         onBack={() => setSelectedScheme(null)}
+        isSaved={savedSchemeIds.has(selectedScheme.id)}
+        onToggleSave={() => handleToggleSave(selectedScheme)}
+        isSaving={savingId === selectedScheme.id}
       />
     );
   }
@@ -68,17 +124,28 @@ const RecommendedSchemes = ({ schemes, isLoading }) => {
       <div className="schemes-grid">
         {schemes.map((scheme) => {
           const isExpanded = expandedSchemes[scheme.id] || false;
+          const isSaved = savedSchemeIds.has(scheme.id);
+          const isCurrentlySaving = savingId === scheme.id;
           const simplifiedDesc = simplifyDescription(scheme.description);
           const truncatedDesc = truncateText(simplifiedDesc, 150);
           const shouldShowMore = simplifiedDesc.length > 150;
 
           return (
             <div key={scheme.id} className="scheme-card">
-              {/* ML Rank Badge & Match Score */}
-              <div className="card-badge">
+              {/* ML Rank Badge & Match Score & Save Bookmark Button */}
+              <div className="card-top-row">
                 <span className="badge-eligible">
                   {scheme.ranking_score ? `Rank #${schemes.indexOf(scheme) + 1} • ${scheme.match_percentage || Math.round(scheme.ranking_score * 100)}% Match` : 'Eligible Match'}
                 </span>
+                <button
+                  type="button"
+                  className={`save-scheme-btn-rec ${isSaved ? 'saved' : ''}`}
+                  title={isSaved ? 'Remove from Saved Schemes' : 'Save to My Schemes'}
+                  onClick={() => handleToggleSave(scheme)}
+                  disabled={isCurrentlySaving}
+                >
+                  {isCurrentlySaving ? '⟳' : isSaved ? '✓' : '🔖'}
+                </button>
               </div>
 
               {/* Title */}
@@ -202,13 +269,34 @@ const RecommendedSchemes = ({ schemes, isLoading }) => {
                 </div>
               )}
 
-              {/* Action Button */}
-              <button
-                className="btn btn-details"
-                onClick={() => setSelectedScheme(scheme)}
-              >
-                 View Full Details & Apply
-              </button>
+              {/* Action Buttons: View Details & Save */}
+              <div className="card-actions-row">
+                <button
+                  className="btn btn-details"
+                  onClick={() => setSelectedScheme(scheme)}
+                >
+                  View Details & Apply
+                </button>
+                <button
+                  type="button"
+                  className={`btn-save-action ${isSaved ? 'btn-saved' : ''}`}
+                  onClick={() => handleToggleSave(scheme)}
+                  disabled={isCurrentlySaving}
+                  title={isSaved ? 'Remove from your saved schemes' : 'Save to your personal collection'}
+                >
+                  {isCurrentlySaving ? (
+                    '⟳ Saving...'
+                  ) : isSaved ? (
+                    <>
+                      <span>✓</span> Saved
+                    </>
+                  ) : (
+                    <>
+                      <span>🔖</span> Save
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           );
         })}
