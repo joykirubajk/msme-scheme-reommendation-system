@@ -17,6 +17,7 @@ router.delete('/account', userController.deleteAccount);
 router.post('/schemes/save', userController.saveScheme);
 router.delete('/schemes/save/:schemeId', userController.unsaveScheme);
 router.get('/schemes/saved', userController.getSavedSchemes);
+router.get('/schemes/saved/ids', userController.getSavedSchemeIds);
 router.get('/schemes/save/:schemeId', userController.checkSchemeSaved);
 
 

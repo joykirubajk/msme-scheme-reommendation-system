@@ -1,5 +1,6 @@
 import db from '../config/db.js';
-import bcrypt from 'bcryptjs'
+import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
 class User {
 
@@ -80,8 +81,8 @@ class User {
     // Generate and store OTP for password reset
 
     static async generatePasswordResetOTP(email) {
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        const otpExpires = new Date(Date.now() + 90 * 1000);
+        const otp = crypto.randomInt(100000, 1000000).toString() // cryptographically secure;
+        const otpExpires = new Date(Date.now() + 5 * 60 * 1000) // 5 minutes;
 
         const result = await db.query(
             `UPDATE users 

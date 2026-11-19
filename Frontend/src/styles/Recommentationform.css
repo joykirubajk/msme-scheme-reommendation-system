@@ -409,3 +409,28 @@
     font-size: 14px;
   }
 }
+
+/* Business description + save-profile option (Phase 3) */
+.form-group textarea {
+  padding: 12px 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  background-color: white;
+}
+
+.form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.save-profile-option {
+  display: block;
+  margin: 16px 0 0;
+  font-size: 14px;
+  color: #2c3e50;
+  cursor: pointer;
+}

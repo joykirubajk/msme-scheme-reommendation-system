@@ -142,10 +142,7 @@ function ProfileDropdown({ isLoggedIn, user, onNavigate, onLogout }) {
 
       {/* My Collections Modal */}
       {showMyCollections && (
-        <MyCollections 
-          onClose={() => setShowMyCollections(false)}
-          savedSchemes={user?.savedSchemes || []}
-        />
+        <MyCollections onClose={() => setShowMyCollections(false)} />
       )}
     </div>
   );

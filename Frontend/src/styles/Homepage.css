@@ -1135,3 +1135,22 @@
 html {
   scroll-behavior: smooth;
 }
+
+/* Browse button in the header nav looks like the other nav links */
+.nav-link-btn {
+  background: none;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.featured-note {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 24px;
+}
+
+/* keep the heart from overlapping the card header */
+.scheme-card > .save-btn.card-corner + .scheme-header {
+  margin-top: 28px;
+}

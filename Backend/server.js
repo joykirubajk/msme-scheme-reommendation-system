@@ -1,43 +1,4 @@
-import express from 'express';
-
-
-import dotenv from 'dotenv';
-
-
-dotenv.config();
-
-
-import cors from 'cors'
-
-
-
-import authRoutes from './routes/auth.js';
-import userRoutes from './routes/users.js';
-import schemeRoutes from './routes/schemes.js';
-
-
-const app = express();
-
-
-//Middleware
-app.use(
-    cors({
-        origin: [
-            "https://msme-scheme-recommender-systems.vercel.app",
-            "http://localhost:5173"
-        ],
-        credentials: true
-    })
-);
-app.use(express.json());
-app.use(express.urlencoded({ extended: true}));
-
-
-
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/schemes', schemeRoutes);
-
+import app from './app.js';
 
 const PORT = process.env.PORT || 8000;
 

@@ -25,7 +25,7 @@ pool.on('connect', () => {
 
 pool.on('error', (err) => {
     console.error('Unexpected Database error', err);
-    process.exit(-1);
+    if (process.env.NODE_ENV !== 'test') process.exit(-1);
 });
 
 export default {

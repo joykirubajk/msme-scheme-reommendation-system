@@ -1,68 +1,65 @@
 import React from 'react';
+import SaveButton from './SaveButton';
+import { labelFor, formatRupees, normalizeScheme, officialUrl } from '../utils/format';
 import '../styles/SchemeDetails.css';
 
-const SchemeDetails = ({ scheme, onBack }) => {
-  const categoryLabels = {
-    'sc_st': 'SC/ST',
-    'transgender': 'Transgender Persons',
-    'pwd': 'Persons with Disabilities',
-    'widow': 'Widows/Destitute Widows',
-    'bpl_women': 'Women from BPL Families'
-  };
+const RULE_LABELS = {
+  min_age: 'Minimum Age',
+  max_age: 'Maximum Age',
+  max_age_relaxed: 'Maximum Age (relaxed groups)',
+  relaxed_age_for: 'Age Relaxation For',
+  genders: 'Open To',
+  states: 'State',
+  min_project_cost: 'Minimum Project Cost',
+  max_project_cost: 'Maximum Project Cost',
+  max_annual_income: 'Maximum Annual Income',
+  min_experience_years: 'Minimum Experience',
+  min_education: 'Minimum Education',
+  business_categories: 'Business Types',
+  social_categories: 'Social Categories',
+  special_categories: 'Must Belong To',
+  max_previous_subsidy: 'Maximum Previous Subsidy',
+  is_new_enterprise_only: 'New Enterprises Only',
+  // legacy keys from older data
+  max_age_general: 'Max Age (General)',
+  max_age_special: 'Max Age (Special)',
+  gender: 'Gender',
+  state: 'State',
+  domicile: 'Domicile',
+  max_investment: 'Max Investment',
+  max_income: 'Max Income',
+  max_family_income: 'Max Family Income',
+  min_experience: 'Min Experience',
+  prior_subsidy_limit: 'Prior Subsidy Limit',
+};
+
+const EDUCATION_LABELS = {
+  none: 'No minimum', '8th': '8th pass', '10th': '10th pass', '12th': '12th pass',
+  diploma: 'Diploma', graduation: 'Graduate', postgraduation: 'Post-graduate',
+};
+
+const MONEY_KEY = /income|subsidy|cost|investment/;
+const YEARS_KEY = /age|experience/;
+
+const formatValue = (key, value) => {
+  if (Array.isArray(value)) return value.map(labelFor).join(', ');
+  if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+  if (key === 'min_education') return EDUCATION_LABELS[value] || labelFor(value);
+  if (typeof value === 'number' && MONEY_KEY.test(key)) return formatRupees(value);
+  if (typeof value === 'number' && YEARS_KEY.test(key)) return `${value} years`;
+  return labelFor(value);
+};
+
+const SchemeDetails = ({ scheme: rawScheme, onBack }) => {
+  const scheme = normalizeScheme(rawScheme);
+  const applyUrl = officialUrl(scheme.official_source);
+  const rules = Object.entries(scheme.rules || {}).filter(([, v]) => v !== null && v !== undefined && v !== '' && !(Array.isArray(v) && v.length === 0));
 
   const simplifyDescription = (description) => {
     if (!description) return '';
-    // Replace technical terms with simpler ones
     return description
       .replace(/MSME|msme/g, 'business')
-      .replace(/subsidy|Subsidy/g, 'financial support')
-      .replace(/entrepreneur|Entrepreneur/g, 'business owner')
-      .replace(/beneficiary|Beneficiary/g, 'applicant')
-      .replace(/eligible|Eligible/g, 'qualified')
-      .replace(/scheme|Scheme/g, 'program');
-  };
-
-  const formatCurrency = (amount) => {
-    if (!amount) return 'N/A';
-    if (amount >= 1000000) {
-      return `₹${(amount / 100000).toFixed(1)}L`;
-    }
-    return `₹${amount.toLocaleString('en-IN')}`;
-  };
-
-  const formatRule = (key, value) => {
-    const ruleLabels = {
-      'min_age': 'Minimum Age',
-      'max_age': 'Maximum Age',
-      'max_age_general': 'Max Age (General)',
-      'max_age_special': 'Max Age (Special)',
-      'gender': 'Gender',
-      'state': 'State',
-      'domicile': 'Domicile',
-      'min_project_cost': 'Min Project Cost',
-      'max_project_cost': 'Max Project Cost',
-      'max_investment': 'Max Investment',
-      'max_income': 'Max Income',
-      'max_family_income': 'Max Family Income',
-      'min_experience': 'Min Experience',
-      'min_experience_years': 'Min Experience (Years)',
-      'max_previous_subsidy': 'Max Previous Support',
-      'prior_subsidy_limit': 'Prior Support Limit'
-    };
-    return ruleLabels[key] || key;
-  };
-
-  const formatValue = (key, value) => {
-    if (Array.isArray(value)) {
-      return value.map(v => v.charAt(0).toUpperCase() + v.slice(1)).join(', ');
-    }
-    if (key.includes('income') || key.includes('subsidy') || key.includes('cost') || key.includes('investment')) {
-      return formatCurrency(value);
-    }
-    if (key.includes('age') || key.includes('experience')) {
-      return `${value} years`;
-    }
-    return value.toString().charAt(0).toUpperCase() + value.toString().slice(1);
+      .replace(/beneficiary|Beneficiary/g, 'applicant');
   };
 
   return (
@@ -76,9 +73,19 @@ const SchemeDetails = ({ scheme, onBack }) => {
         <div className="details-header">
           <div className="header-content">
             <h1>{scheme.name}</h1>
-            <span className="eligible-badge">✓ Eligible for you</span>
+            {scheme.tier === 'eligible' && <span className="eligible-badge">✓ Eligible for you</span>}
+            {scheme.tier === 'possibly_eligible' && <span className="eligible-badge possible">Possibly eligible</span>}
+          </div>
+          <div className="details-actions">
+            <SaveButton schemeId={scheme.id} withLabel />
           </div>
         </div>
+
+        {scheme.verified === false && (
+          <p className="unverified-note" role="note">
+            These details have not yet been checked against the official source. Confirm them before applying.
+          </p>
+        )}
 
         {/* Description - Simplified */}
         {scheme.description && (
@@ -92,7 +99,7 @@ const SchemeDetails = ({ scheme, onBack }) => {
               <span className="highlight-icon">💰</span>
               <div className="highlight-content">
                 <p className="highlight-label">Maximum Financial Support You Can Get</p>
-                <p className="highlight-value">{formatCurrency(scheme.benefits.max_subsidy)}</p>
+                <p className="highlight-value">{formatRupees(scheme.benefits.max_subsidy)}</p>
               </div>
             </div>
             {scheme.benefits.subsidy_percent && (
@@ -113,14 +120,13 @@ const SchemeDetails = ({ scheme, onBack }) => {
             <span className="section-icon">📋</span>
             <h2>Who Can Apply?</h2>
           </div>
-          {scheme.rules && Object.keys(scheme.rules).length > 0 ? (
+          {rules.length > 0 ? (
             <div className="criteria-grid">
-              {Object.entries(scheme.rules).map(([key, value]) => {
-                if (!value) return null;
+              {rules.map(([key, value]) => {
                 return (
                   <div key={key} className="criteria-card">
                     <div className="criteria-header">
-                      <span className="criteria-label">{formatRule(key, value)}</span>
+                      <span className="criteria-label">{RULE_LABELS[key] || labelFor(key)}</span>
                     </div>
                     <div className="criteria-value-box">
                       {key.includes('age') || key.includes('experience') ? '🎯' : '✓'}
@@ -148,7 +154,7 @@ const SchemeDetails = ({ scheme, onBack }) => {
               {scheme.beneficiary_categories.map((category, index) => (
                 <div key={index} className="beneficiary-card">
                   <span className="beneficiary-checkmark">✓</span>
-                  <span className="beneficiary-text">{categoryLabels[category] || category}</span>
+                  <span className="beneficiary-text">{labelFor(category)}</span>
                 </div>
               ))}
             </div>
@@ -173,14 +179,14 @@ const SchemeDetails = ({ scheme, onBack }) => {
               {scheme.benefits.max_subsidy && (
                 <div className="benefit-card benefit-card-primary">
                   <p className="benefit-label">Maximum Amount You Can Get</p>
-                  <p className="benefit-highlight-large">{formatCurrency(scheme.benefits.max_subsidy)}</p>
+                  <p className="benefit-highlight-large">{formatRupees(scheme.benefits.max_subsidy)}</p>
                   <p className="benefit-note-primary">as direct financial support</p>
                 </div>
               )}
               {scheme.benefits.loan_amount && (
                 <div className="benefit-card">
                   <p className="benefit-label">Loan Available</p>
-                  <p className="benefit-highlight">{formatCurrency(scheme.benefits.loan_amount)}</p>
+                  <p className="benefit-highlight">{formatRupees(scheme.benefits.loan_amount)}</p>
                   <p className="benefit-note">for your project needs</p>
                 </div>
               )}
@@ -204,7 +210,7 @@ const SchemeDetails = ({ scheme, onBack }) => {
                 <span className="detail-icon">🏢</span>
                 <div className="detail-content">
                   <p className="detail-label">Business Type</p>
-                  <p className="detail-value">{scheme.business_category.charAt(0).toUpperCase() + scheme.business_category.slice(1)}</p>
+                  <p className="detail-value">{labelFor(scheme.business_category)}</p>
                 </div>
               </div>
             )}
@@ -213,7 +219,7 @@ const SchemeDetails = ({ scheme, onBack }) => {
                 <span className="detail-icon">📍</span>
                 <div className="detail-content">
                   <p className="detail-label">Available In State</p>
-                  <p className="detail-value">{scheme.location.replace(/_/g, ' ').toUpperCase()}</p>
+                  <p className="detail-value">{labelFor(scheme.location)}</p>
                 </div>
               </div>
             )}
@@ -222,16 +228,7 @@ const SchemeDetails = ({ scheme, onBack }) => {
                 <span className="detail-icon">💼</span>
                 <div className="detail-content">
                   <p className="detail-label">Project Cost Limit</p>
-                  <p className="detail-value">{formatCurrency(scheme.max_investment)}</p>
-                </div>
-              </div>
-            )}
-            {scheme.created_at && (
-              <div className="detail-item">
-                <span className="detail-icon">📅</span>
-                <div className="detail-content">
-                  <p className="detail-label">Program Started</p>
-                  <p className="detail-value">{new Date(scheme.created_at).toLocaleDateString('en-IN')}</p>
+                  <p className="detail-value">{formatRupees(scheme.max_investment)}</p>
                 </div>
               </div>
             )}
@@ -286,11 +283,15 @@ const SchemeDetails = ({ scheme, onBack }) => {
         {/* CTA Section */}
         <div className="cta-section">
           <h3>Ready to Apply?</h3>
-          <p>This program is perfectly suited for your business. Start your application today and get the financial support you need!</p>
-          <button className="btn btn-apply">
-            📝 Apply for This Program
-          </button>
-          <p className="cta-note">ℹ️ You'll be redirected to the official government website to complete your application</p>
+          <p>Applications are made on the official government portal for this scheme.</p>
+          {applyUrl ? (
+            <a className="btn btn-apply" href={applyUrl} target="_blank" rel="noopener noreferrer">
+              📝 Open Official Website
+            </a>
+          ) : (
+            <p className="cta-note">Official link not available yet. Search for the scheme name on the relevant government portal.</p>
+          )}
+          {applyUrl && <p className="cta-note">ℹ️ Opens the official website in a new tab.</p>}
         </div>
       </div>
     </div>

@@ -330,3 +330,19 @@
     justify-content: center;
   }
 }
+
+/* Phase 6 additions */
+.collections-error {
+  background: #fdecea;
+  color: #b42318;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 0 0 12px;
+  font-size: 14px;
+}
+
+.scheme-item-meta {
+  font-size: 12px;
+  color: #888;
+  margin: 4px 0 0;
+}

@@ -1,10 +1,27 @@
 import React, { useState } from 'react';
 import SchemeDetails from './SchemeDetails';
+import SaveButton from './SaveButton';
 import '../styles/RecommendedSchemes.css';
 
-const RecommendedSchemes = ({ schemes, isLoading }) => {
+const FIELD_LABELS = {
+  age: 'age',
+  gender: 'gender',
+  social_category: 'social category',
+  special_category: 'special category',
+  business_category: 'specific business type',
+  investment: 'investment amount',
+  location: 'state',
+  income: 'annual income',
+  education: 'education level',
+  experience: 'business experience',
+  previous_subsidy: 'previous subsidy received',
+  is_new_enterprise: 'whether this is a new enterprise',
+};
+
+const RecommendedSchemes = ({ schemes, isLoading, rankedBy }) => {
   const [selectedScheme, setSelectedScheme] = useState(null);
   const [expandedSchemes, setExpandedSchemes] = useState({});
+  const [whyOpen, setWhyOpen] = useState({});
 
   const toggleExpand = (schemeId) => {
     setExpandedSchemes((prev) => ({
@@ -62,7 +79,17 @@ const RecommendedSchemes = ({ schemes, isLoading }) => {
     <div className="schemes-container">
       <div className="schemes-header">
         <h2> Available Schemes for You</h2>
-        <p className="result-count">Found <strong>{schemes.length}</strong> eligible scheme(s) that match your profile</p>
+        <p className="result-count">
+          Found <strong>{schemes.filter((s) => s.tier !== 'possibly_eligible').length}</strong> eligible
+          {schemes.some((s) => s.tier === 'possibly_eligible') && (
+            <> and <strong>{schemes.filter((s) => s.tier === 'possibly_eligible').length}</strong> possibly eligible</>
+          )} scheme(s) for your profile, best match first
+        </p>
+        {rankedBy === 'fallback' && (
+          <p className="ranking-notice">
+            Smart ranking is temporarily unavailable, so these are ordered with a simpler method.
+          </p>
+        )}
       </div>
 
       <div className="schemes-grid">
@@ -74,10 +101,30 @@ const RecommendedSchemes = ({ schemes, isLoading }) => {
 
           return (
             <div key={scheme.id} className="scheme-card">
+              <SaveButton schemeId={scheme.id} className="card-corner" />
               {/* Badge */}
               <div className="card-badge">
-                <span className="badge-eligible"> Perfect Match</span>
+                {scheme.tier === 'possibly_eligible' ? (
+                  <span className="badge-eligible badge-possible">Possibly eligible</span>
+                ) : (
+                  <span className="badge-eligible">Eligible</span>
+                )}
               </div>
+
+              {typeof scheme.score === 'number' && (
+                <div className="match-score" title="Relevance to your profile (not a probability)">
+                  <div className="match-score-bar">
+                    <div className="match-score-fill" style={{ width: `${Math.round(scheme.score * 100)}%` }}></div>
+                  </div>
+                  <span className="match-score-text">Match {Math.round(scheme.score * 100)}%</span>
+                </div>
+              )}
+
+              {scheme.tier === 'possibly_eligible' && scheme.eligibility?.missingInputs?.length > 0 && (
+                <p className="missing-inputs">
+                  Add to confirm: {scheme.eligibility.missingInputs.map((f) => FIELD_LABELS[f] || f).join(', ')}
+                </p>
+              )}
 
               {/* Title */}
               <h3 className="scheme-title">{scheme.name}</h3>
@@ -175,6 +222,28 @@ const RecommendedSchemes = ({ schemes, isLoading }) => {
                       );
                     })}
                   </div>
+                </div>
+              )}
+
+              {(scheme.reasons?.length > 0 || scheme.eligibility?.passedRules?.length > 0) && (
+                <div className="why-matched">
+                  <button
+                    type="button"
+                    className="btn-expand"
+                    onClick={() => setWhyOpen((prev) => ({ ...prev, [scheme.id]: !prev[scheme.id] }))}
+                  >
+                    {whyOpen[scheme.id] ? 'Hide why this matched' : 'Why this matched'}
+                  </button>
+                  {whyOpen[scheme.id] && (
+                    <ul className="why-list">
+                      {(scheme.reasons || []).map((r, i) => (
+                        <li key={`r${i}`}>{r}</li>
+                      ))}
+                      {(scheme.eligibility?.passedRules || []).map((r, i) => (
+                        <li key={`p${i}`} className="why-rule">&#10003; {r.message}</li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               )}
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { schemeAPI } from '../services/api';
+import { schemeAPI, profileAPI } from '../services/api';
 import '../styles/Recommentationform.css';
 
 const SchemeRecommendationForm = ({ onRecommendations, onLoading }) => {
@@ -14,11 +14,44 @@ const SchemeRecommendationForm = ({ onRecommendations, onLoading }) => {
     income: '',
     education: '',
     experience: '',
+    is_new_enterprise: '',
+    business_description: '',
   });
+  const [saveProfile, setSaveProfile] = useState(true);
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formProgress, setFormProgress] = useState(0);
+
+  // Pre-fill from the saved business profile (if any)
+  useEffect(() => {
+    let cancelled = false;
+    const s = (v) => (v === null || v === undefined ? '' : String(v));
+    profileAPI
+      .getProfile()
+      .then((res) => {
+        const p = res?.data?.profile;
+        if (!p || cancelled) return;
+        setFormData({
+          age: s(p.age),
+          gender: s(p.gender),
+          business_category: s(p.business_category),
+          investment: s(p.investment),
+          location: s(p.state),
+          social_category: s(p.social_category),
+          beneficiary_category: s(p.special_category),
+          income: s(p.annual_income),
+          education: s(p.education),
+          experience: s(p.experience_years),
+          is_new_enterprise: p.is_new_enterprise === true ? 'yes' : p.is_new_enterprise === false ? 'no' : '',
+          business_description: s(p.business_description),
+        });
+      })
+      .catch(() => {}); // no saved profile / offline: start with an empty form
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Calculate form completion progress
   useEffect(() => {
@@ -83,25 +116,32 @@ const SchemeRecommendationForm = ({ onRecommendations, onLoading }) => {
     onLoading(true);
 
     try {
-      // Convert string values to numbers
-      const userDataForAPI = {
+      // Convert form values to the API's profile shape
+      const profile = {
         age: parseInt(formData.age, 10),
         gender: formData.gender,
         business_category: formData.business_category,
         investment: parseInt(formData.investment, 10),
-        location: formData.location,
+        state: formData.location,
         social_category: formData.social_category || null,
-        beneficiary_category: formData.beneficiary_category || null,
-        income: formData.income ? parseInt(formData.income, 10) : null,
+        special_category: formData.beneficiary_category || null,
+        annual_income: formData.income !== '' ? parseInt(formData.income, 10) : null,
         education: formData.education || null,
-        experience: formData.experience ? parseInt(formData.experience, 10) : 0,
+        experience_years: formData.experience !== '' ? parseInt(formData.experience, 10) : null,
+        is_new_enterprise: formData.is_new_enterprise === '' ? null : formData.is_new_enterprise === 'yes',
+        business_description: formData.business_description.trim() || null,
       };
 
-      const response = await schemeAPI.recommendSchemes(userDataForAPI);
-      onRecommendations(response.data || []);
+      const response = await schemeAPI.recommendSchemes({ profile, save_profile: saveProfile });
+      onRecommendations(response.data || [], { ranked_by: response.ranked_by });
     } catch (error) {
       console.error('Error fetching recommendations:', error);
-      setErrors({ submit: 'Failed to fetch recommendations. Please try again.' });
+      const apiErrors = error.response?.data?.errors;
+      setErrors({
+        submit: apiErrors?.length
+          ? apiErrors.map((e) => e.message).join('; ')
+          : 'Failed to fetch recommendations. Please try again.',
+      });
       onRecommendations([]);
     } finally {
       setIsSubmitting(false);
@@ -121,6 +161,8 @@ const SchemeRecommendationForm = ({ onRecommendations, onLoading }) => {
       income: '',
       education: '',
       experience: '',
+      is_new_enterprise: '',
+      business_description: '',
     });
     setErrors({});
     onRecommendations([]);
@@ -357,6 +399,41 @@ const SchemeRecommendationForm = ({ onRecommendations, onLoading }) => {
               {errors.location && <span className="error-text">{errors.location}</span>}
               <span className="field-hint">Many schemes are state-specific</span>
             </div>
+
+            {/* New enterprise */}
+            <div className="form-group">
+              <label htmlFor="is_new_enterprise">
+                Starting a new enterprise? <span className="optional">(optional)</span>
+              </label>
+              <select
+                id="is_new_enterprise"
+                name="is_new_enterprise"
+                value={formData.is_new_enterprise}
+                onChange={handleInputChange}
+              >
+                <option value="">Not sure / skip</option>
+                <option value="yes">Yes, starting new</option>
+                <option value="no">No, existing business</option>
+              </select>
+              <span className="field-hint">Some schemes are only for new units</span>
+            </div>
+
+            {/* Business description */}
+            <div className="form-group">
+              <label htmlFor="business_description">
+                Describe your business <span className="optional">(optional)</span>
+              </label>
+              <textarea
+                id="business_description"
+                name="business_description"
+                value={formData.business_description}
+                onChange={handleInputChange}
+                maxLength={1000}
+                rows={3}
+                placeholder="e.g. small unit making pickles and snacks"
+              />
+              <span className="field-hint">Helps rank the most relevant schemes</span>
+            </div>
           </div>
         </fieldset>
 
@@ -407,6 +484,15 @@ const SchemeRecommendationForm = ({ onRecommendations, onLoading }) => {
             </div>
           </div>
         </fieldset>
+
+        <label className="save-profile-option">
+          <input
+            type="checkbox"
+            checked={saveProfile}
+            onChange={(e) => setSaveProfile(e.target.checked)}
+          />{' '}
+          Save these details so I do not have to re-enter them
+        </label>
 
         {/* Form Actions */}
         <div className="form-actions">

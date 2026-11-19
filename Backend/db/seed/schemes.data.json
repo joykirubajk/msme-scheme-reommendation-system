@@ -1,0 +1,576 @@
+[
+  {
+    "name": "PMEGP - Prime Minister's Employment Generation Programme",
+    "description": "Credit-linked subsidy scheme to help new entrepreneurs set up micro enterprises in manufacturing and service sectors. Subsidy is given on the project cost; the rest is bank finance.",
+    "business_category": "any",
+    "max_investment": 5000000,
+    "location": "all_india",
+    "rules": {
+      "min_age": 18,
+      "max_project_cost": 5000000,
+      "min_education": "8th",
+      "is_new_enterprise_only": true,
+      "business_categories": [
+        "manufacturing",
+        "service"
+      ]
+    },
+    "benefits": {
+      "subsidy_percent": 35,
+      "max_subsidy": 1750000
+    },
+    "beneficiary_categories": [
+      "sc_st",
+      "pwd",
+      "bpl_women",
+      "transgender"
+    ],
+    "verified": false,
+    "official_source": "https://www.kviconline.gov.in/pmegpeportal (confirm exact page)"
+  },
+  {
+    "name": "MUDRA Loan - Shishu",
+    "description": "Collateral-free micro loan for very small and start-up businesses under Pradhan Mantri MUDRA Yojana. Shishu category covers the smallest loans.",
+    "business_category": "any",
+    "max_investment": 50000,
+    "location": "all_india",
+    "rules": {
+      "min_age": 18,
+      "max_project_cost": 50000
+    },
+    "benefits": {
+      "loan_amount": 50000
+    },
+    "beneficiary_categories": [],
+    "verified": false,
+    "official_source": "https://www.mudra.org.in (confirm exact page)"
+  },
+  {
+    "name": "MUDRA Loan - Kishor",
+    "description": "Collateral-free loan for businesses that are established but need money to grow, under Pradhan Mantri MUDRA Yojana (Kishor category).",
+    "business_category": "any",
+    "max_investment": 500000,
+    "location": "all_india",
+    "rules": {
+      "min_age": 18,
+      "min_project_cost": 50001,
+      "max_project_cost": 500000
+    },
+    "benefits": {
+      "loan_amount": 500000
+    },
+    "beneficiary_categories": [],
+    "verified": false,
+    "official_source": "https://www.mudra.org.in (confirm exact page)"
+  },
+  {
+    "name": "MUDRA Loan - Tarun",
+    "description": "Collateral-free loan for established businesses looking to expand, under Pradhan Mantri MUDRA Yojana (Tarun category).",
+    "business_category": "any",
+    "max_investment": 1000000,
+    "location": "all_india",
+    "rules": {
+      "min_age": 18,
+      "min_project_cost": 500001,
+      "max_project_cost": 1000000
+    },
+    "benefits": {
+      "loan_amount": 1000000
+    },
+    "beneficiary_categories": [],
+    "verified": false,
+    "official_source": "https://www.mudra.org.in (confirm exact page)"
+  },
+  {
+    "name": "CGTMSE - Credit Guarantee Fund Trust for Micro and Small Enterprises",
+    "description": "Credit guarantee cover so that banks can lend to micro and small enterprises without collateral or third-party guarantee.",
+    "business_category": "any",
+    "max_investment": 50000000,
+    "location": "all_india",
+    "rules": {
+      "min_age": 18,
+      "max_project_cost": 50000000,
+      "business_categories": [
+        "manufacturing",
+        "service",
+        "trading",
+        "retail"
+      ]
+    },
+    "benefits": {
+      "guarantee_percent": 85,
+      "loan_amount": 50000000
+    },
+    "beneficiary_categories": [
+      "bpl_women"
+    ],
+    "verified": false,
+    "official_source": "https://www.cgtmse.in (confirm exact page)"
+  },
+  {
+    "name": "Stand-Up India",
+    "description": "Bank loans for setting up a new (greenfield) enterprise in manufacturing, services or trading, for SC/ST and/or women entrepreneurs.",
+    "business_category": "any",
+    "max_investment": 10000000,
+    "location": "all_india",
+    "rules": {
+      "min_age": 18,
+      "min_project_cost": 1000000,
+      "max_project_cost": 10000000,
+      "is_new_enterprise_only": true,
+      "business_categories": [
+        "manufacturing",
+        "service",
+        "trading"
+      ],
+      "special_categories": [
+        "sc_st",
+        "bpl_women",
+        "widow"
+      ]
+    },
+    "benefits": {
+      "loan_amount": 10000000
+    },
+    "beneficiary_categories": [
+      "sc_st",
+      "bpl_women",
+      "widow"
+    ],
+    "verified": false,
+    "official_source": "https://www.standupmitra.in (confirm exact page)"
+  },
+  {
+    "name": "PMFME - PM Formalisation of Micro Food Processing Enterprises",
+    "description": "Credit-linked capital subsidy and support for individual micro food-processing units to upgrade or formalise.",
+    "business_category": "manufacturing",
+    "max_investment": 3000000,
+    "location": "all_india",
+    "rules": {
+      "min_age": 18,
+      "max_project_cost": 3000000,
+      "business_categories": [
+        "manufacturing",
+        "agriculture"
+      ]
+    },
+    "benefits": {
+      "subsidy_percent": 35,
+      "max_subsidy": 1000000
+    },
+    "beneficiary_categories": [
+      "bpl_women",
+      "sc_st"
+    ],
+    "verified": false,
+    "official_source": "https://pmfme.mofpi.gov.in (confirm exact page)"
+  },
+  {
+    "name": "PM Vishwakarma",
+    "description": "Support for traditional artisans and craftspeople: recognition, skill training, toolkit incentive and low-interest collateral-free credit.",
+    "business_category": "any",
+    "max_investment": 300000,
+    "location": "all_india",
+    "rules": {
+      "min_age": 18,
+      "max_project_cost": 300000,
+      "business_categories": [
+        "manufacturing",
+        "service"
+      ]
+    },
+    "benefits": {
+      "loan_amount": 300000
+    },
+    "beneficiary_categories": [],
+    "verified": false,
+    "official_source": "https://pmvishwakarma.gov.in (confirm exact page)"
+  },
+  {
+    "name": "CLCSS - Credit Linked Capital Subsidy for Technology Upgradation",
+    "description": "Capital subsidy to micro and small manufacturing units that buy certified, upgraded plant and machinery with institutional credit.",
+    "business_category": "manufacturing",
+    "max_investment": 10000000,
+    "location": "all_india",
+    "rules": {
+      "min_age": 18,
+      "max_project_cost": 10000000,
+      "business_categories": [
+        "manufacturing"
+      ],
+      "min_experience_years": 1
+    },
+    "benefits": {
+      "subsidy_percent": 15,
+      "max_subsidy": 1500000
+    },
+    "beneficiary_categories": [],
+    "verified": false,
+    "official_source": "https://msme.gov.in (confirm exact page)"
+  },
+  {
+    "name": "PM SVANidhi - Street Vendor Working Capital Loan",
+    "description": "Small working-capital loan for street vendors, with an interest subsidy on timely repayment and incentives for digital transactions.",
+    "business_category": "retail",
+    "max_investment": 50000,
+    "location": "all_india",
+    "rules": {
+      "min_age": 18,
+      "max_project_cost": 50000,
+      "business_categories": [
+        "retail",
+        "trading"
+      ]
+    },
+    "benefits": {
+      "loan_amount": 50000
+    },
+    "beneficiary_categories": [],
+    "verified": false,
+    "official_source": "https://pmsvanidhi.mohua.gov.in (confirm exact page)"
+  },
+  {
+    "name": "Udyogini Scheme (Women Entrepreneurs)",
+    "description": "Low-cost loans for women with small businesses in agriculture, retail and services, with a larger subsidy for women from SC/ST, widowed or disabled backgrounds.",
+    "business_category": "any",
+    "max_investment": 300000,
+    "location": "all_india",
+    "rules": {
+      "min_age": 18,
+      "max_age": 45,
+      "genders": [
+        "female"
+      ],
+      "max_project_cost": 300000,
+      "max_annual_income": 150000,
+      "business_categories": [
+        "agriculture",
+        "retail",
+        "service",
+        "trading"
+      ]
+    },
+    "benefits": {
+      "loan_amount": 300000,
+      "subsidy_percent": 30
+    },
+    "beneficiary_categories": [
+      "bpl_women",
+      "widow",
+      "pwd",
+      "sc_st"
+    ],
+    "verified": false,
+    "official_source": "https://wcd.nic.in / lead bank portal (confirm exact page)"
+  },
+  {
+    "name": "Mahila Udyam Nidhi (Women Entrepreneurs)",
+    "description": "SIDBI-backed term loan for women to set up or expand small businesses in manufacturing, service and allied sectors.",
+    "business_category": "any",
+    "max_investment": 1000000,
+    "location": "all_india",
+    "rules": {
+      "min_age": 18,
+      "max_age": 55,
+      "genders": [
+        "female"
+      ],
+      "max_project_cost": 1000000,
+      "business_categories": [
+        "manufacturing",
+        "service",
+        "trading"
+      ]
+    },
+    "benefits": {
+      "loan_amount": 1000000
+    },
+    "beneficiary_categories": [
+      "bpl_women",
+      "widow"
+    ],
+    "verified": false,
+    "official_source": "https://www.sidbi.in (confirm exact page)"
+  },
+  {
+    "name": "National SC-ST Hub Support",
+    "description": "Handholding and procurement-related support for Scheduled Caste and Scheduled Tribe entrepreneurs running MSMEs.",
+    "business_category": "any",
+    "max_investment": null,
+    "location": "all_india",
+    "rules": {
+      "min_age": 18,
+      "social_categories": [
+        "sc",
+        "st"
+      ],
+      "special_categories": [
+        "sc_st"
+      ]
+    },
+    "benefits": {
+      "support": "capacity building and market linkage"
+    },
+    "beneficiary_categories": [
+      "sc_st"
+    ],
+    "verified": false,
+    "official_source": "https://nshm.dcmsme.gov.in (confirm exact page)"
+  },
+  {
+    "name": "ZED Certification Support Scheme",
+    "description": "Subsidy on Zero Defect Zero Effect certification costs for MSME manufacturing units, to improve quality and reduce environmental impact.",
+    "business_category": "manufacturing",
+    "max_investment": null,
+    "location": "all_india",
+    "rules": {
+      "min_age": 18,
+      "business_categories": [
+        "manufacturing"
+      ],
+      "min_experience_years": 1
+    },
+    "benefits": {
+      "subsidy_percent": 80,
+      "max_subsidy": 80000
+    },
+    "beneficiary_categories": [],
+    "verified": false,
+    "official_source": "https://zed.msme.gov.in (confirm exact page)"
+  },
+  {
+    "name": "Agriculture Infrastructure Fund",
+    "description": "Medium to long-term loans with interest subvention for post-harvest management infrastructure and community farming assets.",
+    "business_category": "agriculture",
+    "max_investment": 20000000,
+    "location": "all_india",
+    "rules": {
+      "min_age": 18,
+      "max_project_cost": 20000000,
+      "business_categories": [
+        "agriculture"
+      ]
+    },
+    "benefits": {
+      "interest_subvention_percent": 3,
+      "loan_amount": 20000000
+    },
+    "beneficiary_categories": [],
+    "verified": false,
+    "official_source": "https://agriinfra.dac.gov.in (confirm exact page)"
+  },
+  {
+    "name": "Tamil Nadu NEEDS - New Entrepreneur-cum-Enterprise Development Scheme",
+    "description": "Tamil Nadu scheme for first-generation entrepreneurs with a technical or graduate qualification, giving a back-ended capital subsidy and bank-loan support.",
+    "business_category": "any",
+    "max_investment": 50000000,
+    "location": "tamil_nadu",
+    "rules": {
+      "min_age": 21,
+      "max_age": 35,
+      "max_age_relaxed": 45,
+      "relaxed_age_for": [
+        "women",
+        "sc_st",
+        "pwd",
+        "transgender"
+      ],
+      "states": [
+        "tamil_nadu"
+      ],
+      "min_education": "diploma",
+      "max_project_cost": 50000000,
+      "is_new_enterprise_only": true,
+      "business_categories": [
+        "manufacturing",
+        "service"
+      ]
+    },
+    "benefits": {
+      "subsidy_percent": 25,
+      "max_subsidy": 7500000
+    },
+    "beneficiary_categories": [
+      "sc_st",
+      "bpl_women",
+      "pwd"
+    ],
+    "verified": false,
+    "official_source": "https://msmeonline.tn.gov.in (confirm exact page)"
+  },
+  {
+    "name": "Tamil Nadu UYEGP - Unemployed Youth Employment Generation Programme",
+    "description": "Tamil Nadu scheme that gives a subsidy on bank loans to unemployed youth starting small manufacturing, service or business enterprises.",
+    "business_category": "any",
+    "max_investment": 500000,
+    "location": "tamil_nadu",
+    "rules": {
+      "min_age": 18,
+      "max_age": 35,
+      "max_age_relaxed": 45,
+      "relaxed_age_for": [
+        "women",
+        "sc_st",
+        "pwd",
+        "transgender"
+      ],
+      "states": [
+        "tamil_nadu"
+      ],
+      "min_education": "8th",
+      "max_project_cost": 500000,
+      "is_new_enterprise_only": true
+    },
+    "benefits": {
+      "subsidy_percent": 25,
+      "max_subsidy": 250000
+    },
+    "beneficiary_categories": [
+      "sc_st",
+      "bpl_women",
+      "pwd",
+      "transgender"
+    ],
+    "verified": false,
+    "official_source": "https://msmeonline.tn.gov.in (confirm exact page)"
+  },
+  {
+    "name": "Maharashtra CMEGP - Chief Minister's Employment Generation Programme",
+    "description": "Maharashtra state programme giving a margin-money subsidy on bank loans to new micro enterprises set up by young and first-time entrepreneurs.",
+    "business_category": "any",
+    "max_investment": 5000000,
+    "location": "maharashtra",
+    "rules": {
+      "min_age": 18,
+      "max_age": 45,
+      "states": [
+        "maharashtra"
+      ],
+      "min_education": "8th",
+      "max_project_cost": 5000000,
+      "is_new_enterprise_only": true,
+      "business_categories": [
+        "manufacturing",
+        "service"
+      ]
+    },
+    "benefits": {
+      "subsidy_percent": 35,
+      "max_subsidy": 1750000
+    },
+    "beneficiary_categories": [
+      "sc_st",
+      "bpl_women",
+      "pwd"
+    ],
+    "verified": false,
+    "official_source": "https://maha-cmegp.gov.in (confirm exact page)"
+  },
+  {
+    "name": "Uttar Pradesh ODOP Margin Money Scheme",
+    "description": "Uttar Pradesh One District One Product scheme giving a margin-money subsidy on loans for enterprises making the product the district is known for.",
+    "business_category": "manufacturing",
+    "max_investment": 2500000,
+    "location": "uttar_pradesh",
+    "rules": {
+      "min_age": 18,
+      "max_age": 55,
+      "states": [
+        "uttar_pradesh"
+      ],
+      "max_project_cost": 2500000,
+      "business_categories": [
+        "manufacturing"
+      ]
+    },
+    "benefits": {
+      "subsidy_percent": 25,
+      "max_subsidy": 625000
+    },
+    "beneficiary_categories": [],
+    "verified": false,
+    "official_source": "https://odopup.in (confirm exact page)"
+  },
+  {
+    "name": "TWEES - Tamil Nadu Women Entrepreneurs Empowerment Scheme",
+    "description": "Tamil Nadu scheme supporting women and transgender entrepreneurs in starting a small business, with a capital subsidy on the project cost and bank-loan assistance.",
+    "business_category": "any",
+    "max_investment": 1000000,
+    "location": "tamil_nadu",
+    "rules": {
+      "min_age": 18,
+      "max_age": 55,
+      "genders": [
+        "female",
+        "transgender"
+      ],
+      "states": [
+        "tamil_nadu"
+      ],
+      "max_project_cost": 1000000
+    },
+    "benefits": {
+      "subsidy_percent": 25,
+      "max_subsidy": 200000,
+      "loan_assistance": "available"
+    },
+    "beneficiary_categories": [
+      "bpl_women",
+      "widow",
+      "pwd",
+      "sc_st",
+      "transgender"
+    ],
+    "verified": false,
+    "official_source": "From the original project database dump (msme_09112026.sql); confirm on https://msmeonline.tn.gov.in"
+  },
+  {
+    "name": "AABCS - Annal Ambedkar Business Champions Scheme",
+    "description": "Tamil Nadu scheme for enterprises fully owned by SC/ST entrepreneurs, giving a capital subsidy on land, plant and machinery plus interest subvention on machinery loans, for new enterprises and expansions.",
+    "business_category": "manufacturing",
+    "max_investment": 150000000,
+    "location": "tamil_nadu",
+    "rules": {
+      "max_age": 55,
+      "states": [
+        "tamil_nadu"
+      ],
+      "special_categories": [
+        "sc_st"
+      ]
+    },
+    "benefits": {
+      "subsidy_percent": 35,
+      "max_subsidy": 15000000,
+      "interest_subvention": "6%"
+    },
+    "beneficiary_categories": [
+      "sc_st"
+    ],
+    "verified": false,
+    "official_source": "From the original project database dump (msme_09112026.sql); confirm on https://msmeonline.tn.gov.in"
+  },
+  {
+    "name": "KKT - Kalaignar Kaivinai Thittam",
+    "description": "Tamil Nadu scheme for artisans and craftspeople with at least five years of experience in one of the listed trades, giving a subsidy and loan support to set up or expand their work.",
+    "business_category": "any",
+    "max_investment": 500000,
+    "location": "tamil_nadu",
+    "rules": {
+      "min_age": 35,
+      "states": [
+        "tamil_nadu"
+      ],
+      "min_experience_years": 5,
+      "max_previous_subsidy": 150000
+    },
+    "benefits": {
+      "subsidy_percent": 25,
+      "max_subsidy": 50000,
+      "loan_assistance": "available"
+    },
+    "beneficiary_categories": [],
+    "verified": false,
+    "official_source": "From the original project database dump (msme_09112026.sql); confirm on https://msmeonline.tn.gov.in"
+  }
+]
