@@ -1,0 +1,30 @@
+{
+  "corpus_sha256": "2f06b5539ee5fbd76e1c1436012b6a38e78d24bff913c2dfd18a003a00584de7",
+  "model_version": "2f06b553",
+  "n_documents": 22,
+  "n_features": 585,
+  "note": "Hand-set weights; no learning. See app/scoring.py.",
+  "sklearn_version": "1.9.1",
+  "tier_factor": {
+    "eligible": 1.0,
+    "possibly_eligible": 0.9
+  },
+  "vectorizer_file": "tfidf-2f06b553.joblib",
+  "vectorizer_params": {
+    "lowercase": true,
+    "min_df": 1,
+    "ngram_range": [
+      1,
+      2
+    ],
+    "stop_words": "english",
+    "sublinear_tf": true
+  },
+  "weights": {
+    "age": 0.1,
+    "benefit": 0.15,
+    "investment": 0.25,
+    "specificity": 0.15,
+    "text": 0.35
+  }
+}
