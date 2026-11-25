@@ -1,137 +1,230 @@
 import Scheme from '../models/scheme.js';
-import { rankSchemesWithML } from '../services/mlRankingClient.js';
+import { normalizeProfile, missingRequiredFields } from '../services/eligibilityEngine.js';
+import { recommend } from '../services/recommendationService.js';
+import Profile from '../models/profile.js';
+import { validateProfile, validateSchemeQuery, parseId, SCHEME_SORTS } from '../utils/validate.js';
+import { ok, fail } from '../utils/response.js';
 
-const EDUCATION_LEVELS = {
-    'none': 0,
-    '8th': 1,
-    '10th': 2,
-    '12th': 3,
-    'diploma': 4,
-    'graduation': 5,
-    'postgraduation': 6
+// Controller for recommending schemes. Requires login.
+// Body: { profile?: {...}, save_profile?: boolean }. Without `profile`, the user's saved profile is used.
+// Returns eligible + possibly-eligible schemes ordered by ranking score (desc); each carries `tier`, `score`,
+// `reasons` and `eligibility` (passedRules / unknownRules / missingInputs). `ranked_by` is 'ml' (Python service)
+// or 'fallback' (deterministic scorer). Not-eligible schemes are never returned.
+const recommendSchemes = async (req, res, next) => {
+    try {
+        const { profile: provided, save_profile: saveProfile } = req.body || {};
+        let profileInput;
+
+        if (provided !== undefined && provided !== null) {
+            const { value, errors } = validateProfile(provided);
+            if (errors.length > 0) {
+                return fail(res, 400, 'Invalid profile', errors);
+            }
+            profileInput = value;
+            if (saveProfile === true) {
+                await Profile.upsert(req.user.id, value);
+            }
+        } else {
+            profileInput = await Profile.findByUserId(req.user.id);
+            if (!profileInput) {
+                return fail(res, 400, 'No profile provided and no saved profile found');
+            }
+        }
+
+        const profile = normalizeProfile(profileInput);
+
+        const missing = missingRequiredFields(profile);
+        if (missing.length > 0) {
+            return fail(res, 400, 'Missing or invalid profile fields', missing.map((field) => ({
+                field,
+                message: `${field} is required`
+            })));
+        }
+
+        const schemes = await Scheme.findAll();
+        const byId = new Map(schemes.map((s) => [s.id, s]));
+        const ranked = await recommend(profile, schemes);
+
+        const data = ranked.results.map((r) => ({
+            ...byId.get(r.schemeId),
+            tier: r.tier,
+            score: r.score,
+            reasons: r.reasons,
+            eligibility: r.eligibility
+        }));
+
+        res.json({
+            success: true,
+            count: data.length,
+            eligible_count: ranked.results.filter((r) => r.tier === 'eligible').length,
+            possible_count: ranked.results.filter((r) => r.tier === 'possibly_eligible').length,
+            ranked_by: ranked.ranked_by,
+            model_version: ranked.model_version,
+            data
+        });
+    } catch (error) {
+        next(error);
+    }
 };
 
-const parseScheme = (scheme) => {
-    const parseField = (f) => {
-        if (!f) return {};
-        if (typeof f === 'object') return f;
-        try { return JSON.parse(f); } catch { return {}; }
-    };
-    return {
-        ...scheme,
-        rules: parseField(scheme.rules),
-        benefits: parseField(scheme.benefits),
-        beneficiary_categories: parseField(scheme.beneficiary_categories)
-    };
+// GET /api/schemes?category=&state=&q=&investment=&sort=name|investment|newest&order=asc|desc&page=&limit=
+// -> { data: { schemes, pagination: { page, limit, total, totalPages } } }
+const getAllSchemes = async (req, res, next) => {
+    try {
+        const { value, errors } = validateSchemeQuery(req.query);
+        if (errors.length > 0) {
+            return fail(res, 400, 'Invalid query parameters', errors);
+        }
+        const { schemes, total } = await Scheme.search(value);
+        return ok(res, {
+            schemes,
+            pagination: {
+                page: value.page,
+                limit: value.limit,
+                total,
+                totalPages: Math.max(1, Math.ceil(total / value.limit))
+            },
+            filters: {
+                category: value.category ?? null,
+                state: value.state ?? null,
+                q: value.q ?? null,
+                investment: value.investment ?? null,
+                sort: value.sort,
+                order: value.order
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
 };
 
-function checkEligibility(user, scheme) {
-    const rules = scheme.rules || {};
-    const beneficiaryCategories = scheme.beneficiary_categories || {};
+// GET /api/schemes/filters -> { data: { categories:[...], locations:[...], sorts:[...] } }
+const getFilterOptions = async (req, res, next) => {
+    try {
+        const options = await Scheme.filterOptions();
+        return ok(res, {
+            categories: options.categories || [],
+            locations: options.locations || [],
+            sorts: SCHEME_SORTS
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 
-    if (rules.min_age !== undefined && user.age < rules.min_age) return false;
-    
-    if (user.beneficiary_category) {
-        if (rules.max_age_special !== undefined && user.age > rules.max_age_special) return false;
-    } else {
-        if (rules.max_age_special !== undefined && !user.beneficiary_category) {
-            if (rules.max_age_general !== undefined && user.age > rules.max_age_general) return false;
+// GET /api/schemes/:id
+const getSchemeById = async (req, res, next) => {
+    try {
+        const id = parseId(req.params.id);
+        if (id === null) {
+            return fail(res, 400, 'Scheme id must be a positive whole number');
+        }
+        const scheme = await Scheme.findById(id);
+        if (!scheme) {
+            return fail(res, 404, 'Scheme not found');
+        }
+        return ok(res, scheme);
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Helper to parse and validate admin scheme payloads.
+function parseSchemePayload(body, { requireName = false } = {}) {
+    const b = body && typeof body === 'object' ? body : {};
+    const errors = [];
+    const name = typeof b.name === 'string' ? b.name.trim() : '';
+    if (requireName && !name) {
+        errors.push({ field: 'name', message: 'Scheme name is required' });
+    }
+    let maxInvestment = null;
+    if (b.max_investment !== undefined && b.max_investment !== null && b.max_investment !== '') {
+        const num = Number(b.max_investment);
+        if (!Number.isFinite(num) || num < 0) {
+            errors.push({ field: 'max_investment', message: 'max_investment must be a non-negative number' });
+        } else {
+            maxInvestment = num;
         }
     }
-    
-    if (rules.max_age && user.age > rules.max_age) return false;
-
-    if (rules.gender && Array.isArray(rules.gender)) {
-        if (!rules.gender.includes(user.gender)) return false;
-    }
-
-    if (rules.state && user.location && user.location !== rules.state) return false;
-    if (rules.domicile && user.location && user.location !== rules.domicile) return false;
-
-    if (rules.max_investment && user.investment && user.investment > rules.max_investment) return false;
-    if (rules.max_project_cost && user.investment && user.investment > rules.max_project_cost) return false;
-    if (rules.min_project_cost && user.investment && user.investment < rules.min_project_cost) return false;
-
-    if (rules.max_income && user.income && user.income > rules.max_income) return false;
-    if (rules.max_family_income && user.income && user.income > rules.max_family_income) return false;
-
-    if (rules.min_experience && user.experience !== undefined && user.experience < rules.min_experience) return false;
-    if (rules.min_experience_years && user.experience !== undefined && user.experience < rules.min_experience_years) return false;
-
-    if (rules.min_education && user.education) {
-        const userEduRank = EDUCATION_LEVELS[user.education] || 0;
-        const minEduRank = EDUCATION_LEVELS[rules.min_education] || 0;
-        if (userEduRank < minEduRank) return false;
-    }
-
-    if (rules.max_previous_subsidy && user.previous_subsidy && user.previous_subsidy > rules.max_previous_subsidy) return false;
-    if (rules.prior_subsidy_limit && user.previous_subsidy && user.previous_subsidy > rules.prior_subsidy_limit) return false;
-
-    if (user.beneficiary_category && Object.keys(beneficiaryCategories).length > 0) {
-        if (!Object.keys(beneficiaryCategories).includes(user.beneficiary_category)) {
-            return false;
-        }
-    }
-
-    return true;
+    const payload = {
+        name: name || undefined,
+        description: typeof b.description === 'string' ? b.description.trim() : undefined,
+        business_category: typeof b.business_category === 'string' && b.business_category.trim() ? b.business_category.trim() : 'any',
+        max_investment: maxInvestment,
+        location: typeof b.location === 'string' && b.location.trim() ? b.location.trim() : 'all_india',
+        rules: b.rules && typeof b.rules === 'object' && !Array.isArray(b.rules) ? b.rules : {},
+        benefits: b.benefits && typeof b.benefits === 'object' && !Array.isArray(b.benefits) ? b.benefits : {},
+        beneficiary_categories: Array.isArray(b.beneficiary_categories) ? b.beneficiary_categories : [],
+        verified: Boolean(b.verified),
+        official_source: typeof b.official_source === 'string' && b.official_source.trim() ? b.official_source.trim() : null,
+    };
+    return { payload, errors };
 }
 
-// Controller for recommending schemes (Two-stage: Node.js Eligibility + Python ML Ranking)
-const recommendSchemes = async (req, res) => {
+// POST /api/schemes (admin)
+const createScheme = async (req, res, next) => {
     try {
-        const user = req.body;
-
-        const rawSchemes = await Scheme.findAll();
-        const schemes = rawSchemes.map(parseScheme);
-
-        // Stage 1: Rule-based eligibility check in Node.js
-        const eligible = schemes.filter(scheme => checkEligibility(user, scheme));
-
-        if (eligible.length === 0) {
-            return res.json({
-                success: true,
-                count: 0,
-                data: [],
-                message: 'No matching eligible schemes found for this profile.'
-            });
-        }
-
-        // Stage 2: Python ML Ranking Service call (Phase 1 + Phase 2 + Phase 3)
-        const rankedSchemes = await rankSchemesWithML(user, eligible);
-
-        res.json({
-            success: true,
-            count: rankedSchemes.length,
-            data: rankedSchemes
-        });
+        const { payload, errors } = parseSchemePayload(req.body, { requireName: true });
+        if (errors.length > 0) return fail(res, 400, 'Invalid scheme data', errors);
+        const created = await Scheme.create(payload);
+        return ok(res, created, 'Scheme created', 201);
     } catch (error) {
-        console.error('Error recommending schemes:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Internal server error',
-            error: error.message
-        });
+        next(error);
     }
 };
 
-// Get all schemes
-const getAllSchemes = async (req, res) => {
+// PUT /api/schemes/:id (admin)
+const updateScheme = async (req, res, next) => {
     try {
-        const rawSchemes = await Scheme.findAll();
-        const schemes = rawSchemes.map(parseScheme);
-        res.json({
-            success: true,
-            data: schemes
-        });
+        const id = parseId(req.params.id);
+        if (id === null) return fail(res, 400, 'Scheme id must be a positive whole number');
+        const { payload, errors } = parseSchemePayload(req.body, { requireName: true });
+        if (errors.length > 0) return fail(res, 400, 'Invalid scheme data', errors);
+        const updated = await Scheme.update(id, payload);
+        if (!updated) return fail(res, 404, 'Scheme not found');
+        return ok(res, updated);
     } catch (error) {
-        console.error('Error fetching schemes:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Internal server error',
-            error: error.message
-        });
+        next(error);
     }
 };
 
+// PATCH /api/schemes/:id/verify (admin)
+const verifyScheme = async (req, res, next) => {
+    try {
+        const id = parseId(req.params.id);
+        if (id === null) return fail(res, 400, 'Scheme id must be a positive whole number');
+        const verified = Boolean(req.body?.verified);
+        const official_source = typeof req.body?.official_source === 'string' && req.body.official_source.trim()
+            ? req.body.official_source.trim()
+            : null;
+        const updated = await Scheme.verify(id, { verified, official_source });
+        if (!updated) return fail(res, 404, 'Scheme not found');
+        return ok(res, updated);
+    } catch (error) {
+        next(error);
+    }
+};
 
-export { recommendSchemes, getAllSchemes };
+// DELETE /api/schemes/:id (admin)
+const deleteScheme = async (req, res, next) => {
+    try {
+        const id = parseId(req.params.id);
+        if (id === null) return fail(res, 400, 'Scheme id must be a positive whole number');
+        const deleted = await Scheme.delete(id);
+        if (!deleted) return fail(res, 404, 'Scheme not found');
+        return ok(res, { id: deleted.id });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export {
+    recommendSchemes,
+    getAllSchemes,
+    getFilterOptions,
+    getSchemeById,
+    createScheme,
+    updateScheme,
+    verifyScheme,
+    deleteScheme
+};

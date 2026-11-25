@@ -82,6 +82,14 @@ function ProfileDropdown({ isLoggedIn, user, onNavigate, onLogout }) {
               <ul className="dropdown-menu-items">
                 <li>
                   <button className="dropdown-menu-link" onClick={() => {
+                    setIsDropdownOpen(false);
+                    if (onNavigate) onNavigate("dashboard");
+                  }}>
+                    📊 Dashboard
+                  </button>
+                </li>
+                <li>
+                  <button className="dropdown-menu-link" onClick={() => {
                     setShowUserProfile(true);
                     setIsDropdownOpen(false);
                   }}>
@@ -142,10 +150,7 @@ function ProfileDropdown({ isLoggedIn, user, onNavigate, onLogout }) {
 
       {/* My Collections Modal */}
       {showMyCollections && (
-        <MyCollections 
-          onClose={() => setShowMyCollections(false)}
-          savedSchemes={user?.savedSchemes || []}
-        />
+        <MyCollections onClose={() => setShowMyCollections(false)} />
       )}
     </div>
   );

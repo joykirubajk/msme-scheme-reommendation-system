@@ -1,0 +1,515 @@
+[
+  {
+    "name": "empty scheme",
+    "profile": {
+      "age": 30,
+      "gender": "male",
+      "social_category": "general",
+      "special_category": null,
+      "business_category": "manufacturing",
+      "investment": 500000,
+      "location": "tamil_nadu"
+    },
+    "scheme": {
+      "id": 1,
+      "name": "S",
+      "description": null,
+      "business_category": "any",
+      "max_investment": null,
+      "location": "all_india",
+      "benefits": {},
+      "rules": {},
+      "beneficiary_categories": [],
+      "tier": "eligible"
+    },
+    "expected_score": 0.0
+  },
+  {
+    "name": "investment near ceiling",
+    "profile": {
+      "age": 30,
+      "gender": "male",
+      "social_category": "general",
+      "special_category": null,
+      "business_category": "manufacturing",
+      "investment": 500000,
+      "location": "tamil_nadu"
+    },
+    "scheme": {
+      "id": 1,
+      "name": "S",
+      "description": null,
+      "business_category": "any",
+      "max_investment": null,
+      "location": "all_india",
+      "benefits": {},
+      "rules": {
+        "max_project_cost": 600000
+      },
+      "beneficiary_categories": [],
+      "tier": "eligible"
+    },
+    "expected_score": 0.43655
+  },
+  {
+    "name": "investment far below ceiling",
+    "profile": {
+      "age": 30,
+      "gender": "male",
+      "social_category": "general",
+      "special_category": null,
+      "business_category": "manufacturing",
+      "investment": 10000,
+      "location": "tamil_nadu"
+    },
+    "scheme": {
+      "id": 1,
+      "name": "S",
+      "description": null,
+      "business_category": "any",
+      "max_investment": null,
+      "location": "all_india",
+      "benefits": {},
+      "rules": {
+        "max_project_cost": 10000000
+      },
+      "beneficiary_categories": [],
+      "tier": "eligible"
+    },
+    "expected_score": 0.0
+  },
+  {
+    "name": "investment from max_investment column",
+    "profile": {
+      "age": 30,
+      "gender": "male",
+      "social_category": "general",
+      "special_category": null,
+      "business_category": "manufacturing",
+      "investment": 500000,
+      "location": "tamil_nadu"
+    },
+    "scheme": {
+      "id": 1,
+      "name": "S",
+      "description": null,
+      "business_category": "any",
+      "max_investment": 1000000,
+      "location": "all_india",
+      "benefits": {},
+      "rules": {},
+      "beneficiary_categories": [],
+      "tier": "eligible"
+    },
+    "expected_score": 0.38613
+  },
+  {
+    "name": "range uses geometric centre",
+    "profile": {
+      "age": 30,
+      "gender": "male",
+      "social_category": "general",
+      "special_category": null,
+      "business_category": "manufacturing",
+      "investment": 500000,
+      "location": "tamil_nadu"
+    },
+    "scheme": {
+      "id": 1,
+      "name": "S",
+      "description": null,
+      "business_category": "any",
+      "max_investment": null,
+      "location": "all_india",
+      "benefits": {},
+      "rules": {
+        "min_project_cost": 100000,
+        "max_project_cost": 2500000
+      },
+      "beneficiary_categories": [],
+      "tier": "eligible"
+    },
+    "expected_score": 0.454545
+  },
+  {
+    "name": "zero investment",
+    "profile": {
+      "age": 30,
+      "gender": "male",
+      "social_category": "general",
+      "special_category": null,
+      "business_category": "manufacturing",
+      "investment": 0,
+      "location": "tamil_nadu"
+    },
+    "scheme": {
+      "id": 1,
+      "name": "S",
+      "description": null,
+      "business_category": "any",
+      "max_investment": null,
+      "location": "all_india",
+      "benefits": {},
+      "rules": {
+        "max_project_cost": 100000
+      },
+      "beneficiary_categories": [],
+      "tier": "eligible"
+    },
+    "expected_score": 0.0
+  },
+  {
+    "name": "benefit: subsidy and cap",
+    "profile": {
+      "age": 30,
+      "gender": "male",
+      "social_category": "general",
+      "special_category": null,
+      "business_category": "manufacturing",
+      "investment": 500000,
+      "location": "tamil_nadu"
+    },
+    "scheme": {
+      "id": 1,
+      "name": "S",
+      "description": null,
+      "business_category": "any",
+      "max_investment": null,
+      "location": "all_india",
+      "benefits": {
+        "subsidy_percent": 35,
+        "max_subsidy": 1750000
+      },
+      "rules": {},
+      "beneficiary_categories": [],
+      "tier": "eligible"
+    },
+    "expected_score": 0.283373
+  },
+  {
+    "name": "benefit: loan only",
+    "profile": {
+      "age": 30,
+      "gender": "male",
+      "social_category": "general",
+      "special_category": null,
+      "business_category": "manufacturing",
+      "investment": 500000,
+      "location": "tamil_nadu"
+    },
+    "scheme": {
+      "id": 1,
+      "name": "S",
+      "description": null,
+      "business_category": "any",
+      "max_investment": null,
+      "location": "all_india",
+      "benefits": {
+        "loan_amount": 5000000
+      },
+      "rules": {},
+      "beneficiary_categories": [],
+      "tier": "eligible"
+    },
+    "expected_score": 0.083737
+  },
+  {
+    "name": "state specific",
+    "profile": {
+      "age": 30,
+      "gender": "male",
+      "social_category": "general",
+      "special_category": null,
+      "business_category": "manufacturing",
+      "investment": 500000,
+      "location": "tamil_nadu"
+    },
+    "scheme": {
+      "id": 1,
+      "name": "S",
+      "description": null,
+      "business_category": "any",
+      "max_investment": null,
+      "location": "tamil_nadu",
+      "benefits": {},
+      "rules": {
+        "states": [
+          "tamil_nadu"
+        ]
+      },
+      "beneficiary_categories": [],
+      "tier": "eligible"
+    },
+    "expected_score": 0.2
+  },
+  {
+    "name": "state mismatch is not specific",
+    "profile": {
+      "age": 30,
+      "gender": "male",
+      "social_category": "general",
+      "special_category": null,
+      "business_category": "manufacturing",
+      "investment": 500000,
+      "location": "karnataka"
+    },
+    "scheme": {
+      "id": 1,
+      "name": "S",
+      "description": null,
+      "business_category": "any",
+      "max_investment": null,
+      "location": "tamil_nadu",
+      "benefits": {},
+      "rules": {
+        "states": [
+          "tamil_nadu"
+        ]
+      },
+      "beneficiary_categories": [],
+      "tier": "eligible"
+    },
+    "expected_score": 0.0
+  },
+  {
+    "name": "business category target",
+    "profile": {
+      "age": 30,
+      "gender": "male",
+      "social_category": "general",
+      "special_category": null,
+      "business_category": "manufacturing",
+      "investment": 500000,
+      "location": "tamil_nadu"
+    },
+    "scheme": {
+      "id": 1,
+      "name": "S",
+      "description": null,
+      "business_category": "any",
+      "max_investment": null,
+      "location": "all_india",
+      "benefits": {},
+      "rules": {
+        "business_categories": [
+          "manufacturing"
+        ]
+      },
+      "beneficiary_categories": [],
+      "tier": "eligible"
+    },
+    "expected_score": 0.15
+  },
+  {
+    "name": "category from column",
+    "profile": {
+      "age": 30,
+      "gender": "male",
+      "social_category": "general",
+      "special_category": null,
+      "business_category": "manufacturing",
+      "investment": 500000,
+      "location": "tamil_nadu"
+    },
+    "scheme": {
+      "id": 1,
+      "name": "S",
+      "description": null,
+      "business_category": "manufacturing",
+      "max_investment": null,
+      "location": "all_india",
+      "benefits": {},
+      "rules": {},
+      "beneficiary_categories": [],
+      "tier": "eligible"
+    },
+    "expected_score": 0.15
+  },
+  {
+    "name": "women priority",
+    "profile": {
+      "age": 30,
+      "gender": "female",
+      "social_category": "general",
+      "special_category": null,
+      "business_category": "manufacturing",
+      "investment": 500000,
+      "location": "tamil_nadu"
+    },
+    "scheme": {
+      "id": 1,
+      "name": "S",
+      "description": null,
+      "business_category": "any",
+      "max_investment": null,
+      "location": "all_india",
+      "benefits": {},
+      "rules": {
+        "genders": [
+          "female"
+        ]
+      },
+      "beneficiary_categories": [
+        "bpl_women"
+      ],
+      "tier": "eligible"
+    },
+    "expected_score": 0.15
+  },
+  {
+    "name": "sc/st priority via object-shaped categories",
+    "profile": {
+      "age": 30,
+      "gender": "male",
+      "social_category": "sc",
+      "special_category": null,
+      "business_category": "manufacturing",
+      "investment": 500000,
+      "location": "tamil_nadu"
+    },
+    "scheme": {
+      "id": 1,
+      "name": "S",
+      "description": null,
+      "business_category": "any",
+      "max_investment": null,
+      "location": "all_india",
+      "benefits": {},
+      "rules": {},
+      "beneficiary_categories": {
+        "sc_st": true
+      },
+      "tier": "eligible"
+    },
+    "expected_score": 0.15
+  },
+  {
+    "name": "age near middle of range",
+    "profile": {
+      "age": 30,
+      "gender": "male",
+      "social_category": "general",
+      "special_category": null,
+      "business_category": "manufacturing",
+      "investment": 500000,
+      "location": "tamil_nadu"
+    },
+    "scheme": {
+      "id": 1,
+      "name": "S",
+      "description": null,
+      "business_category": "any",
+      "max_investment": null,
+      "location": "all_india",
+      "benefits": {},
+      "rules": {
+        "min_age": 18,
+        "max_age": 45
+      },
+      "beneficiary_categories": [],
+      "tier": "eligible"
+    },
+    "expected_score": 0.222222
+  },
+  {
+    "name": "age at range edge",
+    "profile": {
+      "age": 45,
+      "gender": "male",
+      "social_category": "general",
+      "special_category": null,
+      "business_category": "manufacturing",
+      "investment": 500000,
+      "location": "tamil_nadu"
+    },
+    "scheme": {
+      "id": 1,
+      "name": "S",
+      "description": null,
+      "business_category": "any",
+      "max_investment": null,
+      "location": "all_india",
+      "benefits": {},
+      "rules": {
+        "min_age": 18,
+        "max_age": 45
+      },
+      "beneficiary_categories": [],
+      "tier": "eligible"
+    },
+    "expected_score": 0.0
+  },
+  {
+    "name": "everything",
+    "profile": {
+      "age": 32,
+      "gender": "female",
+      "social_category": "general",
+      "special_category": null,
+      "business_category": "manufacturing",
+      "investment": 500000,
+      "location": "tamil_nadu"
+    },
+    "scheme": {
+      "id": 1,
+      "name": "S",
+      "description": null,
+      "business_category": "any",
+      "max_investment": 700000,
+      "location": "tamil_nadu",
+      "benefits": {
+        "subsidy_percent": 25,
+        "max_subsidy": 250000
+      },
+      "rules": {
+        "states": [
+          "tamil_nadu"
+        ],
+        "min_age": 21,
+        "max_age": 45,
+        "business_categories": [
+          "manufacturing",
+          "service"
+        ],
+        "genders": [
+          "female"
+        ],
+        "max_project_cost": 800000
+      },
+      "beneficiary_categories": [
+        "bpl_women"
+      ],
+      "tier": "eligible"
+    },
+    "expected_score": 0.822953
+  },
+  {
+    "name": "possibly eligible is penalised",
+    "profile": {
+      "age": 30,
+      "gender": "male",
+      "social_category": "general",
+      "special_category": null,
+      "business_category": "manufacturing",
+      "investment": 500000,
+      "location": "tamil_nadu"
+    },
+    "scheme": {
+      "id": 1,
+      "name": "S",
+      "description": null,
+      "business_category": "any",
+      "max_investment": null,
+      "location": "all_india",
+      "benefits": {
+        "subsidy_percent": 25
+      },
+      "rules": {
+        "max_project_cost": 600000
+      },
+      "beneficiary_categories": [],
+      "tier": "possibly_eligible"
+    },
+    "expected_score": 0.429713
+  }
+]

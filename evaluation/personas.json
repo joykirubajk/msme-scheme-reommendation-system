@@ -1,0 +1,161 @@
+{
+  "_about": "Synthetic personas for offline evaluation. Profiles use the API field names. 'spot_checks' are hand-labelled eligibility expectations (in = scheme should be recommended, eligible or possibly eligible; out = must not be recommended), written by reading each scheme's rules in Backend/db/seed/schemes.data.json. 'relevance' is a hand-written judgement of how useful a scheme is for the persona's story (2 = what an adviser would suggest first, 1 = a useful option); schemes not listed count as 0. All of this is synthetic and was written by the developer, not by real users or scheme officials.",
+  "scheme_keys": {
+    "PMEGP": "PMEGP - Prime Minister's Employment Generation Programme",
+    "SHISHU": "MUDRA Loan - Shishu",
+    "KISHOR": "MUDRA Loan - Kishor",
+    "TARUN": "MUDRA Loan - Tarun",
+    "CGTMSE": "CGTMSE - Credit Guarantee Fund Trust for Micro and Small Enterprises",
+    "STANDUP": "Stand-Up India",
+    "PMFME": "PMFME - PM Formalisation of Micro Food Processing Enterprises",
+    "VISHWA": "PM Vishwakarma",
+    "CLCSS": "CLCSS - Credit Linked Capital Subsidy for Technology Upgradation",
+    "SVANIDHI": "PM SVANidhi - Street Vendor Working Capital Loan",
+    "UDYOGINI": "Udyogini Scheme (Women Entrepreneurs)",
+    "MAHILA": "Mahila Udyam Nidhi (Women Entrepreneurs)",
+    "SCSTHUB": "National SC-ST Hub Support",
+    "ZED": "ZED Certification Support Scheme",
+    "AIF": "Agriculture Infrastructure Fund",
+    "NEEDS": "Tamil Nadu NEEDS - New Entrepreneur-cum-Enterprise Development Scheme",
+    "UYEGP": "Tamil Nadu UYEGP - Unemployed Youth Employment Generation Programme",
+    "CMEGP": "Maharashtra CMEGP - Chief Minister's Employment Generation Programme",
+    "ODOP": "Uttar Pradesh ODOP Margin Money Scheme",
+    "TWEES": "TWEES - Tamil Nadu Women Entrepreneurs Empowerment Scheme",
+    "AABCS": "AABCS - Annal Ambedkar Business Champions Scheme",
+    "KKT": "KKT - Kalaignar Kaivinai Thittam"
+  },
+  "personas": [
+    {
+      "id": "P01", "story": "Woman in Tamil Nadu starting a pickle and spice-powder unit",
+      "profile": { "age": 32, "gender": "female", "business_category": "manufacturing", "investment": 800000, "state": "tamil_nadu", "social_category": "general", "education": "12th", "experience_years": 2, "is_new_enterprise": true, "annual_income": 300000, "business_description": "Small unit making pickles and spice powders sold to local shops" },
+      "spot_checks": { "in": ["PMFME", "TWEES", "TARUN", "MAHILA", "PMEGP"], "out": ["SHISHU", "NEEDS", "STANDUP", "AABCS", "UDYOGINI"] },
+      "relevance": { "PMFME": 2, "TWEES": 2, "PMEGP": 1, "MAHILA": 1, "TARUN": 1 }
+    },
+    {
+      "id": "P02", "story": "Man running a tea cart in Delhi who needs small working capital",
+      "profile": { "age": 27, "gender": "male", "business_category": "retail", "investment": 30000, "state": "delhi", "social_category": "obc", "education": "10th", "experience_years": 3, "is_new_enterprise": false, "annual_income": 120000, "business_description": "Tea and snacks cart near a bus stand, need small working capital" },
+      "spot_checks": { "in": ["SVANIDHI", "SHISHU"], "out": ["PMEGP", "KISHOR", "TWEES", "MAHILA"] },
+      "relevance": { "SVANIDHI": 2, "SHISHU": 2 }
+    },
+    {
+      "id": "P03", "story": "SC woman in Tamil Nadu starting a 15 lakh garment unit",
+      "profile": { "age": 38, "gender": "female", "business_category": "manufacturing", "investment": 1500000, "state": "tamil_nadu", "social_category": "sc", "education": "graduation", "experience_years": 4, "is_new_enterprise": true, "annual_income": 250000, "business_description": "Garment stitching unit with 10 machines making school uniforms" },
+      "spot_checks": { "in": ["NEEDS", "STANDUP", "AABCS", "SCSTHUB", "PMEGP"], "out": ["TWEES", "MAHILA", "UYEGP", "TARUN"] },
+      "relevance": { "AABCS": 2, "STANDUP": 2, "NEEDS": 2, "SCSTHUB": 1, "PMEGP": 1, "CGTMSE": 1 }
+    },
+    {
+      "id": "P04", "story": "Young man in Maharashtra opening a phone repair shop",
+      "profile": { "age": 24, "gender": "male", "business_category": "service", "investment": 400000, "state": "maharashtra", "social_category": "general", "education": "12th", "experience_years": 0, "is_new_enterprise": true, "annual_income": 150000, "business_description": "Mobile phone and electronics repair shop" },
+      "spot_checks": { "in": ["CMEGP", "PMEGP", "KISHOR"], "out": ["VISHWA", "CLCSS", "ZED", "NEEDS", "TWEES"] },
+      "relevance": { "CMEGP": 2, "PMEGP": 2, "KISHOR": 1 }
+    },
+    {
+      "id": "P05", "story": "Woman running a brass handicraft export workshop in Uttar Pradesh",
+      "profile": { "age": 45, "gender": "female", "business_category": "manufacturing", "investment": 2000000, "state": "uttar_pradesh", "social_category": "obc", "education": "10th", "experience_years": 6, "is_new_enterprise": false, "annual_income": 400000, "business_description": "Moradabad brass handicraft workshop making decorative items for export" },
+      "spot_checks": { "in": ["ODOP", "CLCSS", "ZED", "CGTMSE"], "out": ["PMEGP", "MAHILA", "TARUN", "STANDUP"] },
+      "relevance": { "ODOP": 2, "CLCSS": 1, "ZED": 1, "CGTMSE": 1 }
+    },
+    {
+      "id": "P06", "story": "Veteran wood-carving artisan in Tamil Nadu",
+      "profile": { "age": 55, "gender": "male", "business_category": "manufacturing", "investment": 300000, "state": "tamil_nadu", "social_category": "obc", "education": "8th", "experience_years": 20, "is_new_enterprise": false, "annual_income": 100000, "business_description": "Traditional wood carving and temple craft artisan" },
+      "spot_checks": { "in": ["KKT", "VISHWA", "KISHOR", "CLCSS"], "out": ["UYEGP", "NEEDS", "AABCS", "TWEES", "PMEGP"] },
+      "relevance": { "KKT": 2, "VISHWA": 2, "KISHOR": 1 }
+    },
+    {
+      "id": "P07", "story": "Widow in Karnataka running a home beauty parlour",
+      "profile": { "age": 40, "gender": "female", "business_category": "service", "investment": 200000, "state": "karnataka", "social_category": "general", "special_category": "widow", "education": "10th", "experience_years": 5, "is_new_enterprise": false, "annual_income": 90000, "business_description": "Beauty parlour and tailoring service from home" },
+      "spot_checks": { "in": ["UDYOGINI", "MAHILA", "KISHOR", "VISHWA"], "out": ["STANDUP", "PMEGP", "TWEES"] },
+      "relevance": { "UDYOGINI": 2, "MAHILA": 1, "KISHOR": 1, "VISHWA": 1 }
+    },
+    {
+      "id": "P08", "story": "Farmer in Punjab building a 1.2 crore cold storage",
+      "profile": { "age": 50, "gender": "male", "business_category": "agriculture", "investment": 12000000, "state": "punjab", "social_category": "general", "education": "graduation", "experience_years": 15, "is_new_enterprise": true, "annual_income": 900000, "business_description": "Cold storage and warehouse for potato farmers" },
+      "spot_checks": { "in": ["AIF"], "out": ["PMFME", "CGTMSE", "STANDUP", "PMEGP"] },
+      "relevance": { "AIF": 2 }
+    },
+    {
+      "id": "P09", "story": "Transgender person in Tamil Nadu starting a tailoring service",
+      "profile": { "age": 29, "gender": "transgender", "business_category": "service", "investment": 150000, "state": "tamil_nadu", "social_category": "general", "education": "12th", "experience_years": 1, "is_new_enterprise": true, "annual_income": 80000, "business_description": "Tailoring and embroidery service" },
+      "spot_checks": { "in": ["TWEES", "UYEGP", "KISHOR", "VISHWA", "PMEGP"], "out": ["NEEDS", "UDYOGINI", "MAHILA", "STANDUP"] },
+      "relevance": { "TWEES": 2, "UYEGP": 2, "PMEGP": 1, "VISHWA": 1 }
+    },
+    {
+      "id": "P10", "story": "Auto-components maker in Karnataka planning a machinery upgrade",
+      "profile": { "age": 35, "gender": "male", "business_category": "manufacturing", "investment": 8000000, "state": "karnataka", "social_category": "general", "education": "postgraduation", "experience_years": 3, "is_new_enterprise": false, "annual_income": 1500000, "business_description": "CNC machined auto components for automobile suppliers, planning machinery upgrade" },
+      "spot_checks": { "in": ["CLCSS", "ZED", "CGTMSE"], "out": ["PMEGP", "STANDUP", "TARUN"] },
+      "relevance": { "CLCSS": 2, "ZED": 2, "CGTMSE": 1 }
+    },
+    {
+      "id": "P11", "story": "Woman with a diploma in Tamil Nadu starting a millet snacks factory",
+      "profile": { "age": 34, "gender": "female", "business_category": "manufacturing", "investment": 2500000, "state": "tamil_nadu", "social_category": "obc", "education": "diploma", "experience_years": 0, "is_new_enterprise": true, "annual_income": 200000, "business_description": "Millet based snacks and ready-to-cook mixes" },
+      "spot_checks": { "in": ["NEEDS", "PMFME", "PMEGP"], "out": ["TWEES", "MAHILA", "STANDUP", "UYEGP", "ZED", "CLCSS"] },
+      "relevance": { "PMFME": 2, "NEEDS": 2, "PMEGP": 1 }
+    },
+    {
+      "id": "P12", "story": "Grocery shop owner in Delhi expanding stock",
+      "profile": { "age": 30, "gender": "male", "business_category": "retail", "investment": 600000, "state": "delhi", "social_category": "general", "education": "12th", "experience_years": 5, "is_new_enterprise": false, "annual_income": 300000, "business_description": "Neighbourhood grocery store, need loan to expand stock" },
+      "spot_checks": { "in": ["TARUN", "CGTMSE"], "out": ["SVANIDHI", "PMEGP", "KISHOR"] },
+      "relevance": { "TARUN": 2, "CGTMSE": 1 }
+    },
+    {
+      "id": "P13", "story": "SC woman from a BPL family in Uttar Pradesh starting a stationery wholesale business",
+      "profile": { "age": 30, "gender": "female", "business_category": "trading", "investment": 1200000, "state": "uttar_pradesh", "social_category": "sc", "special_category": "bpl_women", "education": "graduation", "experience_years": 0, "is_new_enterprise": true, "annual_income": 100000, "business_description": "Wholesale trading of stationery and school supplies" },
+      "spot_checks": { "in": ["STANDUP", "SCSTHUB", "CGTMSE"], "out": ["MAHILA", "UDYOGINI", "ODOP", "PMEGP"] },
+      "relevance": { "STANDUP": 2, "SCSTHUB": 1, "CGTMSE": 1 }
+    },
+    {
+      "id": "P14", "story": "Only the five required fields filled in (service business in Tamil Nadu)",
+      "profile": { "age": 40, "gender": "male", "business_category": "service", "investment": 100000, "state": "tamil_nadu" },
+      "spot_checks": { "in": ["UYEGP", "NEEDS", "KKT", "PMEGP"], "out": ["TWEES", "MAHILA", "SHISHU", "AABCS"] },
+      "relevance": { "KISHOR": 1, "PMEGP": 1, "UYEGP": 1 }
+    },
+    {
+      "id": "P15", "story": "18-year-old woman selling vegetables from a hand cart in Maharashtra (boundary: exactly 50,000)",
+      "profile": { "age": 18, "gender": "female", "business_category": "retail", "investment": 50000, "state": "maharashtra", "social_category": "general", "education": "10th", "experience_years": 0, "is_new_enterprise": true, "annual_income": 60000, "business_description": "Selling vegetables from a hand cart" },
+      "spot_checks": { "in": ["SHISHU", "SVANIDHI", "UDYOGINI"], "out": ["KISHOR", "CMEGP", "PMEGP"] },
+      "relevance": { "SVANIDHI": 2, "SHISHU": 2, "UDYOGINI": 1 }
+    },
+    {
+      "id": "P16", "story": "56-year-old woman caterer in Tamil Nadu (boundary: one year over several age limits)",
+      "profile": { "age": 56, "gender": "female", "business_category": "service", "investment": 500000, "state": "tamil_nadu", "social_category": "general", "education": "12th", "experience_years": 10, "is_new_enterprise": false, "annual_income": 200000, "business_description": "Catering service for weddings" },
+      "spot_checks": { "in": ["KISHOR"], "out": ["TWEES", "MAHILA", "UDYOGINI", "UYEGP"] },
+      "relevance": { "KISHOR": 2 }
+    },
+    {
+      "id": "P17", "story": "42-year-old SC man in Tamil Nadu starting a paper-cup unit (age relaxation applies)",
+      "profile": { "age": 42, "gender": "male", "business_category": "manufacturing", "investment": 400000, "state": "tamil_nadu", "social_category": "sc", "education": "10th", "experience_years": 2, "is_new_enterprise": true, "annual_income": 150000, "business_description": "Paper cup making unit" },
+      "spot_checks": { "in": ["UYEGP", "AABCS", "SCSTHUB", "PMEGP", "KISHOR"], "out": ["NEEDS", "STANDUP", "VISHWA"] },
+      "relevance": { "UYEGP": 2, "AABCS": 2, "PMEGP": 2, "SCSTHUB": 1, "KISHOR": 1 }
+    },
+    {
+      "id": "P18", "story": "Same as P17 but general category (no age relaxation)",
+      "profile": { "age": 42, "gender": "male", "business_category": "manufacturing", "investment": 400000, "state": "tamil_nadu", "social_category": "general", "education": "10th", "experience_years": 2, "is_new_enterprise": true, "annual_income": 150000, "business_description": "Paper cup making unit" },
+      "spot_checks": { "in": ["PMEGP", "KISHOR"], "out": ["UYEGP", "AABCS", "SCSTHUB", "NEEDS"] },
+      "relevance": { "PMEGP": 2, "KISHOR": 1 }
+    },
+    {
+      "id": "P19", "story": "Delhi showroom owner with a project of Rs 10,00,001 (boundary: just above MUDRA Tarun)",
+      "profile": { "age": 35, "gender": "male", "business_category": "retail", "investment": 1000001, "state": "delhi", "social_category": "general", "education": "12th", "experience_years": 5, "is_new_enterprise": false, "annual_income": 500000, "business_description": "Electronics showroom" },
+      "spot_checks": { "in": ["CGTMSE"], "out": ["TARUN", "KISHOR", "SVANIDHI"] },
+      "relevance": { "CGTMSE": 2 }
+    },
+    {
+      "id": "P20", "story": "Woman farmer in Kerala processing coconut oil and spices",
+      "profile": { "age": 45, "gender": "female", "business_category": "agriculture", "investment": 2500000, "state": "kerala", "social_category": "general", "education": "graduation", "experience_years": 8, "is_new_enterprise": false, "annual_income": 600000, "business_description": "Coconut oil and spice processing from our farm" },
+      "spot_checks": { "in": ["PMFME", "AIF"], "out": ["UDYOGINI", "MAHILA", "CGTMSE", "TWEES"] },
+      "relevance": { "PMFME": 2, "AIF": 1 }
+    },
+    {
+      "id": "P21", "story": "50-year-old woman in Maharashtra starting a bakery (just over CMEGP age limit)",
+      "profile": { "age": 50, "gender": "female", "business_category": "manufacturing", "investment": 3000000, "state": "maharashtra", "social_category": "general", "education": "diploma", "experience_years": 0, "is_new_enterprise": true, "annual_income": 400000, "business_description": "Bakery and biscuit manufacturing unit" },
+      "spot_checks": { "in": ["PMEGP", "PMFME"], "out": ["CMEGP", "MAHILA", "STANDUP"] },
+      "relevance": { "PMFME": 2, "PMEGP": 2 }
+    },
+    {
+      "id": "P22", "story": "44-year-old man with a disability in Tamil Nadu opening a print shop",
+      "profile": { "age": 44, "gender": "male", "business_category": "service", "investment": 300000, "state": "tamil_nadu", "social_category": "obc", "special_category": "pwd", "education": "12th", "experience_years": 0, "is_new_enterprise": true, "annual_income": 120000, "business_description": "Photocopy and printing shop" },
+      "spot_checks": { "in": ["UYEGP", "VISHWA", "KISHOR", "PMEGP"], "out": ["NEEDS", "AABCS", "TWEES"] },
+      "relevance": { "UYEGP": 2, "PMEGP": 1, "KISHOR": 1 }
+    }
+  ]
+}

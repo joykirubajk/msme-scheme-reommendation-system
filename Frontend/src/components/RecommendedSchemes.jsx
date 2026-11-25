@@ -1,63 +1,29 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import SchemeDetails from './SchemeDetails';
-import { collectionAPI, authAPI } from '../services/api';
+import SaveButton from './SaveButton';
+import { useLanguage, buildTamilSchemeSummary } from '../context/LanguageContext';
 import '../styles/RecommendedSchemes.css';
 
-const RecommendedSchemes = ({ schemes, isLoading }) => {
+const FIELD_LABELS = {
+  age: 'age',
+  gender: 'gender',
+  social_category: 'social category',
+  special_category: 'special category',
+  business_category: 'specific business type',
+  investment: 'investment amount',
+  location: 'state',
+  income: 'annual income',
+  education: 'education level',
+  experience: 'business experience',
+  previous_subsidy: 'previous subsidy received',
+  is_new_enterprise: 'whether this is a new enterprise',
+};
+
+const RecommendedSchemes = ({ schemes, isLoading, rankedBy }) => {
+  const { lang, t } = useLanguage();
   const [selectedScheme, setSelectedScheme] = useState(null);
   const [expandedSchemes, setExpandedSchemes] = useState({});
-  const [savedSchemeIds, setSavedSchemeIds] = useState(new Set());
-  const [savingId, setSavingId] = useState(null);
-
-  const fetchSavedStatus = useCallback(async () => {
-    if (authAPI.isLoggedIn()) {
-      try {
-        const res = await collectionAPI.getSavedSchemes();
-        const schemesList = res?.data?.schemes || [];
-        setSavedSchemeIds(new Set(schemesList.map((s) => s.id)));
-      } catch (err) {
-        // silent fail if unauthorized
-      }
-    } else {
-      setSavedSchemeIds(new Set());
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchSavedStatus();
-    const handleUpdate = () => fetchSavedStatus();
-    window.addEventListener('savedSchemesUpdated', handleUpdate);
-    return () => window.removeEventListener('savedSchemesUpdated', handleUpdate);
-  }, [fetchSavedStatus]);
-
-  const handleToggleSave = async (scheme) => {
-    if (!authAPI.isLoggedIn()) {
-      alert('Please sign in to save schemes to your personal collection.');
-      return;
-    }
-
-    const isSaved = savedSchemeIds.has(scheme.id);
-    setSavingId(scheme.id);
-
-    try {
-      if (isSaved) {
-        await collectionAPI.unsaveScheme(scheme.id);
-        setSavedSchemeIds((prev) => {
-          const next = new Set(prev);
-          next.delete(scheme.id);
-          return next;
-        });
-      } else {
-        await collectionAPI.saveScheme(scheme.id);
-        setSavedSchemeIds((prev) => new Set(prev).add(scheme.id));
-      }
-      window.dispatchEvent(new CustomEvent('savedSchemesUpdated', { detail: { schemeId: scheme.id } }));
-    } catch (err) {
-      console.error('Error toggling save scheme:', err);
-    } finally {
-      setSavingId(null);
-    }
-  };
+  const [whyOpen, setWhyOpen] = useState({});
 
   const toggleExpand = (schemeId) => {
     setExpandedSchemes((prev) => ({
@@ -86,7 +52,7 @@ const RecommendedSchemes = ({ schemes, isLoading }) => {
       <div className="schemes-container">
         <div className="loading-spinner">
           <div className="spinner"></div>
-          <p>Finding eligible schemes for you...</p>
+          <p>{t('loadingSchemes')}</p>
         </div>
       </div>
     );
@@ -96,7 +62,7 @@ const RecommendedSchemes = ({ schemes, isLoading }) => {
     return (
       <div className="schemes-container">
         <div className="no-results">
-          <p> No schemes found for your criteria. Try adjusting your inputs.</p>
+          <p>{t('noSchemesFound')}</p>
         </div>
       </div>
     );
@@ -107,77 +73,76 @@ const RecommendedSchemes = ({ schemes, isLoading }) => {
       <SchemeDetails
         scheme={selectedScheme}
         onBack={() => setSelectedScheme(null)}
-        isSaved={savedSchemeIds.has(selectedScheme.id)}
-        onToggleSave={() => handleToggleSave(selectedScheme)}
-        isSaving={savingId === selectedScheme.id}
       />
     );
   }
 
+  const eligibleCount = schemes.filter((s) => s.tier !== 'possibly_eligible').length;
+  const possibleCount = schemes.filter((s) => s.tier === 'possibly_eligible').length;
+  const possiblePart = possibleCount > 0 ? t('andPossiblyEligible', { possible: possibleCount }) : '';
+
   return (
     <div className="schemes-container">
       <div className="schemes-header">
-        <h2> Available Schemes for You</h2>
-        <p className="result-count">Found <strong>{schemes.length}</strong> eligible scheme(s) that match your profile</p>
+        <h2>{t('availableSchemesTitle')}</h2>
+        <p className="result-count">
+          {t('foundEligibleCount', { eligible: eligibleCount, possiblePart })}
+        </p>
+        {rankedBy === 'fallback' && (
+          <p className="ranking-notice">
+            {t('fallbackNotice')}
+          </p>
+        )}
       </div>
 
       <div className="schemes-grid">
         {schemes.map((scheme) => {
           const isExpanded = expandedSchemes[scheme.id] || false;
-          const isSaved = savedSchemeIds.has(scheme.id);
-          const isCurrentlySaving = savingId === scheme.id;
           const simplifiedDesc = simplifyDescription(scheme.description);
           const truncatedDesc = truncateText(simplifiedDesc, 150);
           const shouldShowMore = simplifiedDesc.length > 150;
+          const tamilSummary = lang === 'ta' ? buildTamilSchemeSummary(scheme) : '';
 
           return (
             <div key={scheme.id} className="scheme-card">
-              {/* ML Rank Badge & Match Score & Save Bookmark Button */}
-              <div className="card-top-row">
-                <span className="badge-eligible">
-                  {scheme.ranking_score ? `Rank #${schemes.indexOf(scheme) + 1} • ${scheme.match_percentage || Math.round(scheme.ranking_score * 100)}% Match` : 'Eligible Match'}
-                </span>
-                <button
-                  type="button"
-                  className={`save-scheme-btn-rec ${isSaved ? 'saved' : ''}`}
-                  title={isSaved ? 'Remove from Saved Schemes' : 'Save to My Schemes'}
-                  onClick={() => handleToggleSave(scheme)}
-                  disabled={isCurrentlySaving}
-                >
-                  {isCurrentlySaving ? '⟳' : isSaved ? '✓' : '🔖'}
-                </button>
+              <SaveButton schemeId={scheme.id} className="card-corner" />
+              {/* Badge */}
+              <div className="card-badge">
+                {scheme.tier === 'possibly_eligible' ? (
+                  <span className="badge-eligible badge-possible">{t('possiblyEligible')}</span>
+                ) : (
+                  <span className="badge-eligible">{t('eligible')}</span>
+                )}
               </div>
+
+              {typeof scheme.score === 'number' && (
+                <div className="match-score" title="Relevance to your profile (not a probability)">
+                  <div className="match-score-bar">
+                    <div className="match-score-fill" style={{ width: `${Math.round(scheme.score * 100)}%` }}></div>
+                  </div>
+                  <span className="match-score-text">{t('matchLabel', { pct: Math.round(scheme.score * 100) })}</span>
+                </div>
+              )}
+
+              {scheme.tier === 'possibly_eligible' && scheme.eligibility?.missingInputs?.length > 0 && (
+                <p className="missing-inputs">
+                  {t('addToConfirm')}{scheme.eligibility.missingInputs.map((f) => FIELD_LABELS[f] || f).join(', ')}
+                </p>
+              )}
 
               {/* Title */}
               <h3 className="scheme-title">{scheme.name}</h3>
-
-              {/* ML Explainable Match Reasons */}
-              {scheme.match_reasons && scheme.match_reasons.length > 0 && (
-                <div className="ml-match-reasons-box" style={{
-                  background: '#f0fdf4',
-                  border: '1px solid #bbf7d0',
-                  borderRadius: '8px',
-                  padding: '10px 14px',
-                  marginBottom: '14px',
-                  fontSize: '12.5px',
-                  color: '#166534'
-                }}>
-                  <div style={{ fontWeight: '600', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span>🤖 AI Recommendation Reason:</span>
-                  </div>
-                  <ul style={{ margin: 0, paddingLeft: '18px' }}>
-                    {scheme.match_reasons.map((reason, idx) => (
-                      <li key={idx} style={{ margin: '2px 0' }}>{reason}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
 
               {/* Description */}
               <div className="description-box">
                 <p className="scheme-description">
                   {isExpanded ? simplifiedDesc : truncatedDesc}
                 </p>
+                {tamilSummary && (
+                  <p className="scheme-description" style={{ color: '#4338ca', fontWeight: 500, marginTop: '6px' }}>
+                    {tamilSummary}
+                  </p>
+                )}
                 {shouldShowMore && (
                   <button
                     className="btn-expand"
@@ -186,11 +151,11 @@ const RecommendedSchemes = ({ schemes, isLoading }) => {
                   >
                     {isExpanded ? (
                       <>
-                        <span> Show Less</span>
+                        <span>{t('showLess')}</span>
                       </>
                     ) : (
                       <>
-                        <span> View More</span>
+                        <span>{t('viewMore')}</span>
                       </>
                     )}
                   </button>
@@ -198,20 +163,22 @@ const RecommendedSchemes = ({ schemes, isLoading }) => {
               </div>
 
               {/* Key Benefits Highlights */}
-              <div className="benefits-highlight">
-                {scheme.benefits && scheme.benefits.subsidy_percent && (
-                  <div className="highlight-box">
-                    <div className="highlight-number">{scheme.benefits.subsidy_percent}%</div>
-                    <div className="highlight-label">Financial Support</div>
-                  </div>
-                )}
-                {scheme.benefits && scheme.benefits.max_subsidy && (
-                  <div className="highlight-box highlight-box-primary">
-                    <div className="highlight-number">₹{(scheme.benefits.max_subsidy / 100000).toFixed(1)}L</div>
-                    <div className="highlight-label">Max Support</div>
-                  </div>
-                )}
-              </div>
+              {(scheme.benefits?.subsidy_percent || scheme.benefits?.max_subsidy) && (
+                <div className="benefits-highlight">
+                  {scheme.benefits.subsidy_percent && (
+                    <div className="highlight-box">
+                      <div className="highlight-number">{scheme.benefits.subsidy_percent}%</div>
+                      <div className="highlight-label">{t('financialSupport')}</div>
+                    </div>
+                  )}
+                  {scheme.benefits.max_subsidy && (
+                    <div className="highlight-box highlight-box-primary">
+                      <div className="highlight-number">₹{(scheme.benefits.max_subsidy / 100000).toFixed(1)}L</div>
+                      <div className="highlight-label">{t('maxSupport')}</div>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Quick Info Cards */}
               <div className="info-grid">
@@ -219,7 +186,7 @@ const RecommendedSchemes = ({ schemes, isLoading }) => {
                   <div className="info-card">
                     <span className="info-icon"></span>
                     <div className="info-content">
-                      <div className="info-label">Investment</div>
+                      <div className="info-label">{t('investment')}</div>
                       <div className="info-value">₹{(scheme.max_investment / 100000).toFixed(1)}L</div>
                     </div>
                   </div>
@@ -229,7 +196,7 @@ const RecommendedSchemes = ({ schemes, isLoading }) => {
                   <div className="info-card">
                     <span className="info-icon"></span>
                     <div className="info-content">
-                      <div className="info-label">Available In</div>
+                      <div className="info-label">{t('availableIn')}</div>
                       <div className="info-value">{scheme.location.replace(/_/g, ' ')}</div>
                     </div>
                   </div>
@@ -239,7 +206,7 @@ const RecommendedSchemes = ({ schemes, isLoading }) => {
                   <div className="info-card">
                     <span className="info-icon"></span>
                     <div className="info-content">
-                      <div className="info-label">Business Type</div>
+                      <div className="info-label">{t('businessType')}</div>
                       <div className="info-value">{scheme.business_category}</div>
                     </div>
                   </div>
@@ -249,7 +216,7 @@ const RecommendedSchemes = ({ schemes, isLoading }) => {
               {/* Special Categories Badge */}
               {scheme.beneficiary_categories && scheme.beneficiary_categories.length > 0 && (
                 <div className="categories-section">
-                  <p className="categories-label"> Special Priority For:</p>
+                  <p className="categories-label">{t('specialPriorityFor')}</p>
                   <div className="categories-tags">
                     {scheme.beneficiary_categories.slice(0, 3).map((category, index) => {
                       const categoryLabels = {
@@ -269,34 +236,35 @@ const RecommendedSchemes = ({ schemes, isLoading }) => {
                 </div>
               )}
 
-              {/* Action Buttons: View Details & Save */}
-              <div className="card-actions-row">
-                <button
-                  className="btn btn-details"
-                  onClick={() => setSelectedScheme(scheme)}
-                >
-                  View Details & Apply
-                </button>
-                <button
-                  type="button"
-                  className={`btn-save-action ${isSaved ? 'btn-saved' : ''}`}
-                  onClick={() => handleToggleSave(scheme)}
-                  disabled={isCurrentlySaving}
-                  title={isSaved ? 'Remove from your saved schemes' : 'Save to your personal collection'}
-                >
-                  {isCurrentlySaving ? (
-                    '⟳ Saving...'
-                  ) : isSaved ? (
-                    <>
-                      <span>✓</span> Saved
-                    </>
-                  ) : (
-                    <>
-                      <span>🔖</span> Save
-                    </>
+              {(scheme.reasons?.length > 0 || scheme.eligibility?.passedRules?.length > 0) && (
+                <div className="why-matched">
+                  <button
+                    type="button"
+                    className="btn-expand"
+                    onClick={() => setWhyOpen((prev) => ({ ...prev, [scheme.id]: !prev[scheme.id] }))}
+                  >
+                    {whyOpen[scheme.id] ? t('hideWhyMatched') : t('whyMatched')}
+                  </button>
+                  {whyOpen[scheme.id] && (
+                    <ul className="why-list">
+                      {(scheme.reasons || []).map((r, i) => (
+                        <li key={`r${i}`}>{r}</li>
+                      ))}
+                      {(scheme.eligibility?.passedRules || []).map((r, i) => (
+                        <li key={`p${i}`} className="why-rule">&#10003; {r.message}</li>
+                      ))}
+                    </ul>
                   )}
-                </button>
-              </div>
+                </div>
+              )}
+
+              {/* Action Button */}
+              <button
+                className="btn btn-details"
+                onClick={() => setSelectedScheme(scheme)}
+              >
+                 {t('viewDetailsApply')}
+              </button>
             </div>
           );
         })}

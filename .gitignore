@@ -38,3 +38,17 @@ Backend/.env
 coverage/
 **/.cache/
 
+
+# Test env (copy from .env.test.example)
+Backend/.env.test
+
+# Playwright MCP scratch output (browser snapshots/screenshots)
+.playwright-mcp/
+
+# Database dumps hold real users' personal data - never commit them
+msme_*.sql
+*.backup
+*.dump
+
+# User-study answers contain participant data
+docs/user-study/results.csv

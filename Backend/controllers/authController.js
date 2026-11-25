@@ -9,7 +9,7 @@ const generateToken = (user) => {
     return jwt.sign(
         { id: user.id, email: user.email },
         process.env.JWT_SECRET,
-        { expiresIn: '365d' }
+        { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
 };
 
@@ -61,7 +61,8 @@ export const register = async (req, res, next) => {
                     id: user.id,
                     email: user.email,
                     name: user.name,
-                    phone: user.phone
+                    phone: user.phone,
+                    role: user.role || 'user'
                 },
                 token
 
@@ -96,7 +97,7 @@ export const login = async (req, res, next) => {
         if(!user) {
             return res.status(401).json({
                 success: false,
-                message: 'Invalid user'
+                message: 'Invalid email or password'
             });
         }
 
@@ -106,7 +107,7 @@ export const login = async (req, res, next) => {
         if (!isPasswordValid) {
             return res.status(401).json({
                 success: false,
-                message: 'Invalid password'
+                message: 'Invalid email or password'
             });
         }
 
@@ -123,7 +124,8 @@ export const login = async (req, res, next) => {
                     id: user.id,
                     email: user.email,
                     name: user.name,
-                    phone: user.phone
+                    phone: user.phone,
+                    role: user.role || 'user'
                 },
                 token
             }
@@ -198,7 +200,8 @@ export const updateProfile = async (req, res, next) => {
                     id: updatedUser.id,
                     email: updatedUser.email,
                     name: updatedUser.name,
-                    phone: updatedUser.phone
+                    phone: updatedUser.phone,
+                    role: updatedUser.role || 'user'
                 }
             }
         });

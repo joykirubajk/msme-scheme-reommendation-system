@@ -25,6 +25,19 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// A 401 on a request that carried a token means the session expired: clear it and tell the app.
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401 && error.config?.headers?.Authorization) {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+      window.dispatchEvent(new Event('auth:expired'));
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Auth endpoints
 export const authAPI = {
   // Sign up new user
@@ -173,6 +186,12 @@ export const collectionAPI = {
     }
   },
 
+  // Ids of every saved scheme in one call: { data: { ids: [..] } }
+  getSavedIds: async () => {
+    const response = await apiClient.get('/users/schemes/saved/ids');
+    return response.data;
+  },
+
   // Check if a scheme is saved
   isSchemeSaved: async (schemeId) => {
     try {
@@ -184,17 +203,30 @@ export const collectionAPI = {
   },
 };
 
+// Business profile (used to pre-fill the recommendation form)
+export const profileAPI = {
+  getProfile: async () => {
+    const response = await apiClient.get('/business-profile');
+    return response.data;
+  },
+};
+
 // Scheme endpoints
 export const schemeAPI = {
-  // Get all schemes
-  getAllSchemes: async () => {
-    try {
-      const response = await apiClient.get('/schemes');
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching schemes:', error);
-      throw error;
-    }
+  // Filtered, paginated list. params: { category, state, q, investment, sort, order, page, limit }
+  // -> { data: { schemes, pagination: { page, limit, total, totalPages } } }
+  listSchemes: async (params = {}) => {
+    const clean = Object.fromEntries(
+      Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== '')
+    );
+    const response = await apiClient.get('/schemes', { params: clean });
+    return response.data;
+  },
+
+  // Values for the filter dropdowns: { data: { categories, locations, sorts } }
+  getFilterOptions: async () => {
+    const response = await apiClient.get('/schemes/filters');
+    return response.data;
   },
 
   // Get scheme by ID
@@ -208,10 +240,10 @@ export const schemeAPI = {
     }
   },
 
-  // Get recommended schemes based on user data
-  recommendSchemes: async (userData) => {
+  // Get recommended schemes. Body: { profile?, save_profile? } (omit profile to use the saved one)
+  recommendSchemes: async (payload) => {
     try {
-      const response = await apiClient.post('/schemes/recommend', userData);
+      const response = await apiClient.post('/schemes/recommend', payload);
       return response.data;
     } catch (error) {
       console.error('Error getting scheme recommendations:', error);
@@ -219,7 +251,26 @@ export const schemeAPI = {
     }
   },
 
+  // Admin: create, update, verify, delete schemes
+  createScheme: async (payload) => {
+    const response = await apiClient.post('/schemes', payload);
+    return response.data;
+  },
 
+  updateScheme: async (id, payload) => {
+    const response = await apiClient.put(`/schemes/${id}`, payload);
+    return response.data;
+  },
+
+  verifyScheme: async (id, { verified, official_source }) => {
+    const response = await apiClient.patch(`/schemes/${id}/verify`, { verified, official_source });
+    return response.data;
+  },
+
+  deleteScheme: async (id) => {
+    const response = await apiClient.delete(`/schemes/${id}`);
+    return response.data;
+  },
 };
 
 export default apiClient;

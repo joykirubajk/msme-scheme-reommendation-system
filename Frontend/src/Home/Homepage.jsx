@@ -1,142 +1,56 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import { schemeAPI, collectionAPI, authAPI } from "../services/api";
-import Header from "../components/Header.jsx";
+import { schemeAPI } from "../services/api";
+import Profile from "../components/Profile.jsx";
 import SchemeDetails from "../components/SchemeDetails.jsx";
+import SaveButton from "../components/SaveButton.jsx";
+import { useLanguage, LanguageToggle } from "../context/LanguageContext";
+import { labelFor, formatRupees, normalizeScheme, errorMessage } from "../utils/format";
 import "../styles/Homepage.css";
 
-function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout }) {
-  const [allSchemes, setAllSchemes] = useState([]);
-  const [filteredSchemes, setFilteredSchemes] = useState([]);
+const FEATURED_COUNT = 6;
+
+function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout, onBrowse }) {
+  const { t } = useLanguage();
+  const [featured, setFeatured] = useState([]);
+  const [totalSchemes, setTotalSchemes] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [showMoreSchemes, setShowMoreSchemes] = useState(false);
   const [selectedScheme, setSelectedScheme] = useState(null);
-  const [savedSchemes, setSavedSchemes] = useState([]);
-  const [savingSchemeId, setSavingSchemeId] = useState(null);
 
-  const fetchAllSchemes = useCallback(async () => {
+  // A few schemes for the home page; the full list lives on the Browse page.
+  const fetchFeatured = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await schemeAPI.getAllSchemes();
-      // Handle both array and object response formats
-      let schemes = Array.isArray(response) ? response : response.data || [];
-      
-      // Parse JSON fields if they're strings
-      schemes = schemes.map(scheme => ({
-        ...scheme,
-        benefits: typeof scheme.benefits === 'string' ? JSON.parse(scheme.benefits) : scheme.benefits,
-        rules: typeof scheme.rules === 'string' ? JSON.parse(scheme.rules) : scheme.rules,
-        beneficiary_categories: typeof scheme.beneficiary_categories === 'string' ? JSON.parse(scheme.beneficiary_categories) : scheme.beneficiary_categories
-      }));
-      
-      setAllSchemes(schemes);
+      const response = await schemeAPI.listSchemes({ limit: FEATURED_COUNT, sort: "investment", order: "desc" });
+      setFeatured((response?.data?.schemes || []).map(normalizeScheme));
+      setTotalSchemes(response?.data?.pagination?.total ?? null);
       setError(null);
     } catch (err) {
-      console.error("Error fetching schemes:", err);
-      setError("Failed to load schemes. Please try again later.");
-      setAllSchemes([]);
+      setError(errorMessage(err, "Failed to load schemes. Please try again later."));
+      setFeatured([]);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const fetchSavedSchemes = useCallback(async () => {
-    try {
-      const response = await collectionAPI.getSavedSchemes();
-      if (response.success) {
-        setSavedSchemes(response.data.schemes || []);
-      }
-    } catch (err) {
-      console.error("Error fetching saved schemes:", err);
-    }
-  }, []);
-
-  // Handle saving/unsaving a scheme
-  const handleToggleSaveScheme = useCallback(async (scheme) => {
-    if (!isLoggedIn || !authAPI.isLoggedIn()) {
-      onNavigate('signin');
-      return;
-    }
-
-    const isSaved = savedSchemes.some(s => s.id === scheme.id);
-    setSavingSchemeId(scheme.id);
-
-    try {
-      if (isSaved) {
-        await collectionAPI.unsaveScheme(scheme.id);
-        setSavedSchemes(savedSchemes.filter(s => s.id !== scheme.id));
-      } else {
-        await collectionAPI.saveScheme(scheme.id);
-        setSavedSchemes([...savedSchemes, scheme]);
-      }
-      window.dispatchEvent(new CustomEvent('savedSchemesUpdated', { detail: { schemeId: scheme.id } }));
-    } catch (err) {
-      console.error("Error toggling save scheme:", err);
-    } finally {
-      setSavingSchemeId(null);
-    }
-  }, [isLoggedIn, onNavigate, savedSchemes]);
-
-  const filterSchemes = useCallback(() => {
-    let results = allSchemes;
-
-    // Filter by category
-    if (selectedCategory !== "All") {
-      results = results.filter(
-        (scheme) => scheme.business_category === selectedCategory
-      );
-    }
-
-    // Filter by search query
-    if (searchQuery.trim()) {
-      results = results.filter(
-        (scheme) =>
-          scheme.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          scheme.description?.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    setFilteredSchemes(results);
-  }, [allSchemes, selectedCategory, searchQuery]);
-
-  // Fetch schemes on component mount
   useEffect(() => {
-    fetchAllSchemes();
-    if (isLoggedIn && authAPI.isLoggedIn()) {
-      fetchSavedSchemes();
-    }
-    const handleUpdate = () => {
-      if (authAPI.isLoggedIn()) {
-        fetchSavedSchemes();
-      }
-    };
-    window.addEventListener('savedSchemesUpdated', handleUpdate);
-    return () => window.removeEventListener('savedSchemesUpdated', handleUpdate);
-  }, [isLoggedIn, fetchAllSchemes, fetchSavedSchemes]);
+    fetchFeatured();
+  }, [fetchFeatured]);
 
-  // Filter schemes when search query or category changes
-  useEffect(() => {
-    if (allSchemes.length > 0) {
-      filterSchemes();
-    }
-  }, [searchQuery, selectedCategory, allSchemes, filterSchemes]);
+  const browse = (q = "") => {
+    if (onBrowse) onBrowse(q);
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
-    // Search is handled by useEffect, no need to do anything here
+    browse(searchQuery.trim());
   };
 
-  const navigate = useNavigate();
-
   const handleStartRecommendation = () => {
-    if (!isLoggedIn && !authAPI.isLoggedIn()) {
-      navigate('/signin');
-      return;
+    if (onFindSchemes) {
+      onFindSchemes();
     }
-    navigate('/recommend');
   };
 
   const handleLearnMore = (scheme) => {
@@ -147,42 +61,93 @@ function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout }) {
     setSelectedScheme(null);
   };
 
-  const getCategories = () => {
-    const categories = ["All"];
-    const uniqueCategories = new Set(allSchemes.map((s) => s.business_category));
-    return categories.concat(Array.from(uniqueCategories).filter(Boolean));
-  };
-
-  const displayedSchemes = showMoreSchemes
-    ? filteredSchemes.slice(0, 9)
-    : filteredSchemes.slice(0, 2);
-
   return (
     <div id="home" className="home">
 
-      {/* Unified Global Header */}
-      <Header
-        isLoggedIn={isLoggedIn}
-        user={user}
-        onLogout={onLogout}
-        onNavigate={onNavigate}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        onSearch={handleSearch}
-      />
+      {/* Header*/}
+
+      <header className="header">
+        <div className="header-wrapper">
+          <div className="logo-section">
+            <div className="logo">
+              <img src="/msme logo.png" alt="MSME Logo" className="logo-icon" />
+              <h1 className="logo-text">{t("brand")}</h1>
+            </div>
+          </div>
+
+          <form className="search-form" onSubmit={handleSearch}>
+            <input
+              className="search-input"
+              type="search"
+              placeholder={t("searchPlaceholder")}
+              aria-label={t("searchPlaceholder")}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button className="search-btn" type="submit" aria-label="Search">
+              🔍
+            </button>
+          </form>
+
+          <nav className="nav">
+            <a className="nav-link" href="#home">
+              {t("navHome")}
+            </a>
+            <button type="button" className="nav-link nav-link-btn" onClick={() => browse("")}>
+              {t("navBrowse")}
+            </button>
+            {isLoggedIn && (
+              <button type="button" className="nav-link nav-link-btn" onClick={() => onNavigate && onNavigate("dashboard")}>
+                {t("navDashboard")}
+              </button>
+            )}
+            {isLoggedIn && user?.role === "admin" && (
+              <button type="button" className="nav-link nav-link-btn" onClick={() => onNavigate && onNavigate("admin")}>
+                {t("navAdmin")}
+              </button>
+            )}
+            <a className="nav-link" href="#how-it-works">
+              {t("navHowItWorks")}
+            </a>
+            <a className="nav-link" href="#contact">
+              {t("navAbout")}
+            </a>
+          </nav>
+
+          <LanguageToggle />
+
+          {isLoggedIn && user ? (
+            <div className="auth-section">
+              <span className="user-greeting">{t("welcomeUser", { name: user.name })}</span>
+              <Profile
+                isLoggedIn={isLoggedIn} 
+                user={user} 
+                onNavigate={onNavigate} 
+                onLogout={onLogout} 
+              />
+            </div>
+          ) : (
+            <Profile
+              isLoggedIn={isLoggedIn} 
+              user={user} 
+              onNavigate={onNavigate} 
+              onLogout={onLogout} 
+            />
+          )}
+        </div>
+      </header>
 
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
           <h1 className="hero-title">
-            Find The Perfect Government Scheme For Your Business
+            {t("heroTitle")}
           </h1>
           <p className="hero-subtitle">
-            Unlock growth opportunities with government schemes tailored to your
-            MSME needs
+            {t("heroSubtitle")}
           </p>
           <button className="cta-btn" onClick={handleStartRecommendation}>
-            🚀 Find Your Schemes
+            {t("heroCta")}
           </button>
         </div>
       </section>
@@ -190,16 +155,8 @@ function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout }) {
       {/* Statistics Section */}
       <section className="scheme-stats">
         <div className="stat-item">
-          <h3 className="stat-number">{allSchemes.length || "50"}+</h3>
-          <p className="stat-label">Active Schemes</p>
-        </div>
-        <div className="stat-item">
-          <h3 className="stat-number">10K+</h3>
-          <p className="stat-label">Businesses Helped</p>
-        </div>
-        <div className="stat-item">
-          <h3 className="stat-number">₹1000Cr</h3>
-          <p className="stat-label">Funds Distributed</p>
+          <h3 className="stat-number">{totalSchemes ?? "–"}</h3>
+          <p className="stat-label">Schemes Listed</p>
         </div>
       </section>
 
@@ -221,7 +178,7 @@ function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout }) {
             <div className="step-number">2</div>
             <h3 className="step-title">Get Recommendations</h3>
             <p className="step-desc">
-              Our AI analyzes your data and shows matching schemes
+              Our eligibility engine checks the rules and ranks the schemes that fit you best
             </p>
           </div>
 
@@ -241,27 +198,11 @@ function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout }) {
 
       {/* Schemes Section */}
       <section id="schemes" className="schemes">
-        <h2 className="section-title">Available Schemes</h2>
+        <h2 className="section-title">Featured Schemes</h2>
+        <p className="section-text featured-note">
+          Schemes with the largest project size. Use Browse to search and filter all of them by business type and state.
+        </p>
 
-        {/* Category Filter */}
-        <div className="category-filter">
-          <p className="filter-label">Filter by Category:</p>
-          <div className="category-list">
-            {getCategories().map((category) => (
-              <button
-                key={category}
-                className={`category-btn ${
-                  selectedCategory === category ? "active" : ""
-                }`}
-                onClick={() => setSelectedCategory(category)}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Schemes Display */}
         {loading ? (
           <div className="loading-state">
             <p>Loading schemes...</p>
@@ -269,68 +210,38 @@ function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout }) {
         ) : error ? (
           <div className="error-state">
             <p>{error}</p>
-            <button
-              className="retry-btn"
-              onClick={fetchAllSchemes}
-            >
+            <button className="retry-btn" onClick={fetchFeatured}>
               Retry
             </button>
           </div>
-        ) : filteredSchemes.length === 0 ? (
+        ) : featured.length === 0 ? (
           <div className="empty-state">
-            <p>No schemes found matching your criteria.</p>
-            <button
-              className="reset-btn"
-              onClick={() => {
-                setSearchQuery("");
-                setSelectedCategory("All");
-              }}
-            >
-              Clear Filters
-            </button>
+            <p>No schemes in the database yet.</p>
           </div>
         ) : (
           <>
             <div className="schemes-grid">
-              {displayedSchemes.map((scheme) => (
+              {featured.map((scheme) => (
                 <div key={scheme.id} className="scheme-card">
-                  <button 
-                    className={`save-scheme-btn ${savedSchemes.some(s => s.id === scheme.id) ? 'saved' : ''}`}
-                    title={savedSchemes.some(s => s.id === scheme.id) ? 'Remove from saved schemes' : 'Save to my schemes'}
-                    onClick={() => handleToggleSaveScheme(scheme)}
-                    disabled={savingSchemeId === scheme.id}
-                  >
-                    {savingSchemeId === scheme.id ? '⟳' : savedSchemes.some(s => s.id === scheme.id) ? '✓' : '🔖'}
-                  </button>
+                  <SaveButton schemeId={scheme.id} className="card-corner" />
                   <div className="scheme-header">
                     <h3 className="scheme-name">{scheme.name}</h3>
-                    <span className="scheme-category">{scheme.business_category || "General"}</span>
+                    <span className="scheme-category">
+                      {labelFor(scheme.location) || "All India"}
+                      {scheme.business_category && scheme.business_category !== "any" ? ` · ${labelFor(scheme.business_category)}` : ""}
+                    </span>
                   </div>
                   <p className="scheme-description">{scheme.description || "No description available"}</p>
                   <div className="scheme-details">
-                    {scheme.benefits && (
+                    {scheme.benefits?.subsidy_percent !== undefined && (
                       <div className="scheme-detail-item">
-                        <strong>Benefits:</strong>{" "}
-                        {typeof scheme.benefits === "object"
-                          ? Object.entries(scheme.benefits)
-                              .map(([key, value]) => `${key}: ${value}`)
-                              .join(", ")
-                          : scheme.benefits}
+                        <strong>Subsidy:</strong> {scheme.benefits.subsidy_percent}%
+                        {scheme.benefits.max_subsidy !== undefined && ` (up to ${formatRupees(scheme.benefits.max_subsidy)})`}
                       </div>
                     )}
-                    {scheme.eligibility && (
+                    {scheme.max_investment !== null && scheme.max_investment !== undefined && (
                       <div className="scheme-detail-item">
-                        <strong>Eligibility:</strong> {scheme.eligibility}
-                      </div>
-                    )}
-                    {scheme.rules && (
-                      <div className="scheme-detail-item">
-                        <strong>Requirements:</strong>{" "}
-                        {typeof scheme.rules === "object"
-                          ? Object.entries(scheme.rules)
-                              .map(([key, value]) => `${key}: ${value}`)
-                              .join(", ")
-                          : scheme.rules}
+                        <strong>Project size up to:</strong> {formatRupees(scheme.max_investment)}
                       </div>
                     )}
                   </div>
@@ -339,19 +250,11 @@ function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout }) {
               ))}
             </div>
 
-            {/* Show More/Less Toggle */}
-            {filteredSchemes.length > 2 && (
-              <div className="toggle-container">
-                <button
-                  className="toggle-btn"
-                  onClick={() => setShowMoreSchemes(!showMoreSchemes)}
-                >
-                  {showMoreSchemes
-                    ? "↑ Show Less"
-                    : `↓ View More (${filteredSchemes.length - 2} more schemes)`}
-                </button>
-              </div>
-            )}
+            <div className="toggle-container">
+              <button className="toggle-btn" onClick={() => browse("")}>
+                Browse all {totalSchemes ?? ""} schemes →
+              </button>
+            </div>
           </>
         )}
       </section>
@@ -371,7 +274,7 @@ function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout }) {
             <div className="feature">
               <span className="feature-icon">✓</span>
               <h4>Comprehensive Database</h4>
-              <p>Access 50+ central and state schemes</p>
+              <p>Browse central and state schemes in one place</p>
             </div>
             <div className="feature">
               <span className="feature-icon">✓</span>
@@ -392,7 +295,7 @@ function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout }) {
       <section className="cta-section">
         <h2 className="cta-title">Ready to Grow Your Business?</h2>
         <p className="cta-subtitle">
-          Join thousands of MSMEs benefiting from government schemes
+          Tell us about your business and see which schemes you qualify for
         </p>
         <button className="cta-btn primary" onClick={handleStartRecommendation}>
           Start Recommendation Process →
@@ -416,45 +319,30 @@ function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout }) {
                 <a href="#home">Home</a>
               </li>
               <li>
-                <a href="#schemes">Schemes</a>
+                <a href="#schemes">Featured Schemes</a>
               </li>
               <li>
                 <a href="#how-it-works">How It Works</a>
               </li>
               <li>
-                <a href="#contact">Contact</a>
+                <a href="#contact">About</a>
               </li>
             </ul>
           </div>
 
           <div className="footer-section">
-            <h4>Contact Us</h4>
-            <div className="contact-item">
-              <p>
-                <strong>Phone:</strong>{" "}
-                <a href="tel:+919876543210">+91 98765 43210</a>
-              </p>
-            </div>
-            <div className="contact-item">
-              <p>
-                <strong>Email:</strong>{" "}
-                <a href="mailto:support@msme-schemes.gov.in">
-                  support@msme-schemes.gov.in
-                </a>
-              </p>
-            </div>
-            <div className="contact-item">
-              <p>
-                <strong>Hours:</strong> Mon - Fri, 9:00 AM - 6:00 PM IST
-              </p>
-            </div>
+            <h4>About the Data</h4>
+            <p className="footer-tagline">
+              Scheme details here are summaries for guidance only. Always confirm
+              eligibility and benefits on the scheme's official government website
+              before applying.
+            </p>
           </div>
         </div>
 
         <div className="footer-bottom">
           <p>
-            © 2026 MSME Scheme Portal. All rights reserved. | Powered by India's
-            Leading MSME Platform
+            © 2026 MSME Scheme Portal. Not an official government website.
           </p>
         </div>
       </footer>
@@ -464,13 +352,7 @@ function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout }) {
         <div className="scheme-details-modal-overlay" onClick={handleBackFromSchemeDetails}>
           <div className="scheme-details-modal" onClick={(e) => e.stopPropagation()}>
             <button className="scheme-details-close-btn" onClick={handleBackFromSchemeDetails}>✕</button>
-            <SchemeDetails
-              scheme={selectedScheme}
-              onBack={handleBackFromSchemeDetails}
-              isSaved={savedSchemes.some(s => s.id === selectedScheme.id)}
-              onToggleSave={() => handleToggleSaveScheme(selectedScheme)}
-              isSaving={savingSchemeId === selectedScheme.id}
-            />
+            <SchemeDetails scheme={selectedScheme} onBack={handleBackFromSchemeDetails} />
           </div>
         </div>
       )}

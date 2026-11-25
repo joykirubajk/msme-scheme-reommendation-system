@@ -631,3 +631,41 @@
     width: 100%;
   }
 }
+
+/* Phase 5/6 additions */
+.details-header .header-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.details-header h1 {
+  overflow-wrap: anywhere;
+}
+
+.details-actions {
+  flex-shrink: 0;
+}
+
+.eligible-badge.possible {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.unverified-note {
+  background: #fff8e6;
+  border: 1px solid #f5d48a;
+  color: #7a5a00;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  margin: 0 0 16px;
+}
+
+a.btn-apply {
+  display: inline-block;
+  text-decoration: none;
+}
