@@ -114,26 +114,28 @@ function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout, onBro
             </a>
           </nav>
 
-          <LanguageToggle />
+          <div className="header-actions">
+            <LanguageToggle />
 
-          {isLoggedIn && user ? (
-            <div className="auth-section">
-              <span className="user-greeting">{t("welcomeUser", { name: user.name })}</span>
+            {isLoggedIn && user ? (
+              <div className="auth-section">
+                <span className="user-greeting">{t("welcomeUser", { name: user.name })}</span>
+                <Profile
+                  isLoggedIn={isLoggedIn} 
+                  user={user} 
+                  onNavigate={onNavigate} 
+                  onLogout={onLogout} 
+                />
+              </div>
+            ) : (
               <Profile
                 isLoggedIn={isLoggedIn} 
                 user={user} 
                 onNavigate={onNavigate} 
                 onLogout={onLogout} 
               />
-            </div>
-          ) : (
-            <Profile
-              isLoggedIn={isLoggedIn} 
-              user={user} 
-              onNavigate={onNavigate} 
-              onLogout={onLogout} 
-            />
-          )}
+            )}
+          </div>
         </div>
       </header>
 

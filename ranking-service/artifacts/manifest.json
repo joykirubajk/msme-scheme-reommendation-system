@@ -1,9 +1,54 @@
 {
   "corpus_sha256": "2f06b5539ee5fbd76e1c1436012b6a38e78d24bff913c2dfd18a003a00584de7",
+  "ml_model": {
+    "algorithm": "random_forest",
+    "all_candidates_cv": {
+      "logistic_regression": {
+        "accuracy": 0.7726,
+        "f1": 0.4741,
+        "roc_auc": 0.8583
+      },
+      "random_forest": {
+        "accuracy": 0.7623,
+        "f1": 0.4964,
+        "roc_auc": 0.8645
+      }
+    },
+    "cv_metrics": {
+      "accuracy": 0.7623,
+      "f1": 0.4964,
+      "roc_auc": 0.8645
+    },
+    "feature_weights_or_importance": {
+      "age_fit": 0.07,
+      "benefit": 0.1252,
+      "has_age": 0.0569,
+      "has_investment": 0.0104,
+      "has_text": 0.0099,
+      "investment_fit": 0.2854,
+      "is_possibly_eligible": 0.0,
+      "specificity": 0.3616,
+      "text_sim": 0.0806
+    },
+    "features": [
+      "text_sim",
+      "has_text",
+      "investment_fit",
+      "has_investment",
+      "benefit",
+      "specificity",
+      "age_fit",
+      "has_age",
+      "is_possibly_eligible"
+    ],
+    "file": "ml_ranker-2f06b553.joblib",
+    "n_positive": 70,
+    "n_samples": 484
+  },
   "model_version": "2f06b553",
   "n_documents": 22,
   "n_features": 585,
-  "note": "Hand-set weights; no learning. See app/scoring.py.",
+  "note": "TF-IDF + random_forest trained on persona-scheme relevance pairs.",
   "sklearn_version": "1.9.1",
   "tier_factor": {
     "eligible": 1.0,

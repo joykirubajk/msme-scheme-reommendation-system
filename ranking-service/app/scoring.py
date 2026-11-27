@@ -167,8 +167,25 @@ def combine(components: Dict[str, Optional[float]], tier: str) -> float:
     return clip01(base * TIER_FACTOR.get(tier, 1.0))
 
 
-def score_scheme(profile: Dict[str, Any], scheme: Dict[str, Any], text: Optional[Tuple[float, List[str]]] = None) -> Tuple[float, List[str]]:
-    """profile / scheme are plain dicts. `text` = (cosine, keywords) or None when the user gave no description."""
+FEATURE_NAMES = [
+    "text_sim",
+    "has_text",
+    "investment_fit",
+    "has_investment",
+    "benefit",
+    "specificity",
+    "age_fit",
+    "has_age",
+    "is_possibly_eligible",
+]
+
+
+def extract_features(
+    profile: Dict[str, Any],
+    scheme: Dict[str, Any],
+    text: Optional[Tuple[float, List[str]]] = None,
+) -> Tuple[Dict[str, Optional[float]], List[float], List[str]]:
+    """Computes the 5 heuristic signals, the fixed-width ML feature vector, and human-readable reasons."""
     rules = scheme.get("rules") or {}
     comps: Dict[str, Optional[float]] = {}
     notes: Dict[str, List[str]] = {}
@@ -194,13 +211,30 @@ def score_scheme(profile: Dict[str, Any], scheme: Dict[str, Any], text: Optional
     if r:
         notes["age"] = [r]
 
-    score = round(combine(comps, scheme.get("tier", "eligible")), 6)
-
-    # reasons ordered by how much each signal contributed
     ordered = sorted((k for k in notes), key=lambda k: (-(WEIGHTS[k] * (comps[k] or 0.0)), k))
     reasons = [line for k in ordered for line in notes[k]][:4]
     if not reasons:
         reasons = ["Meets the eligibility rules for this scheme"]
+
+    tier = scheme.get("tier", "eligible")
+    vector = [
+        float(comps["text"]) if comps["text"] is not None else 0.0,
+        1.0 if comps["text"] is not None else 0.0,
+        float(comps["investment"]) if comps["investment"] is not None else 0.0,
+        1.0 if comps["investment"] is not None else 0.0,
+        float(comps["benefit"] or 0.0),
+        float(comps["specificity"] or 0.0),
+        float(comps["age"]) if comps["age"] is not None else 0.0,
+        1.0 if comps["age"] is not None else 0.0,
+        1.0 if tier == "possibly_eligible" else 0.0,
+    ]
+    return comps, vector, reasons
+
+
+def score_scheme(profile: Dict[str, Any], scheme: Dict[str, Any], text: Optional[Tuple[float, List[str]]] = None) -> Tuple[float, List[str]]:
+    """profile / scheme are plain dicts. `text` = (cosine, keywords) or None when the user gave no description."""
+    comps, _, reasons = extract_features(profile, scheme, text)
+    score = round(combine(comps, scheme.get("tier", "eligible")), 6)
     return score, reasons
 
 
