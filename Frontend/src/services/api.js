@@ -273,4 +273,12 @@ export const schemeAPI = {
   },
 };
 
+// Offline NLP chatbot endpoint
+export const chatAPI = {
+  sendMessage: async (message, lang = 'en') => {
+    const response = await apiClient.post('/chat', { message, lang });
+    return response.data;
+  },
+};
+
 export default apiClient;

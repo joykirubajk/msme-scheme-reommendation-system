@@ -8,6 +8,7 @@ import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
 import schemeRoutes from './routes/schemes.js';
 import businessProfileRoutes from './routes/businessProfile.js';
+import chatRoutes from './routes/chat.js';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -39,6 +40,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/schemes', schemeRoutes);
 app.use('/api/business-profile', businessProfileRoutes);
+app.use('/api/chat', chatRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

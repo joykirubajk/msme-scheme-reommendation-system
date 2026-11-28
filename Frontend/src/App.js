@@ -8,6 +8,7 @@ import RecommendedSchemes from './components/RecommendedSchemes.jsx';
 import DiscoverSchemes from './components/DiscoverSchemes.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import AdminDashboard from './components/AdminDashboard.jsx';
+import ChatWidget from './components/ChatWidget.jsx';
 import { SavedSchemesProvider, useSavedSchemes } from './context/SavedSchemesContext';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import './styles/SaveButton.css';
@@ -281,6 +282,7 @@ function AppContent({
         />
       )}
       <SavedErrorToast />
+      <ChatWidget />
     </div>
     </SavedSchemesProvider>
   );
