@@ -1,50 +1,57 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { schemeAPI } from "../services/api";
-import Profile from "../components/Profile.jsx";
+import { collectionAPI, schemeAPI } from "../services/api";
 import SchemeDetails from "../components/SchemeDetails.jsx";
 import SaveButton from "../components/SaveButton.jsx";
-import { useLanguage, LanguageToggle } from "../context/LanguageContext";
+import { useSavedSchemes } from "../context/SavedSchemesContext";
+import { useLanguage } from "../context/LanguageContext";
 import { labelFor, formatRupees, normalizeScheme, errorMessage } from "../utils/format";
 import "../styles/Homepage.css";
 
-const FEATURED_COUNT = 6;
-
-function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout, onBrowse }) {
-  const { t } = useLanguage();
-  const [featured, setFeatured] = useState([]);
+function HomePage({ onFindSchemes, isLoggedIn, onBrowse }) {
+  const { lang, t } = useLanguage();
+  const { savedIds, version } = useSavedSchemes();
+  const [savedSchemes, setSavedSchemes] = useState([]);
   const [totalSchemes, setTotalSchemes] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
   const [selectedScheme, setSelectedScheme] = useState(null);
 
-  // A few schemes for the home page; the full list lives on the Browse page.
-  const fetchFeatured = useCallback(async () => {
+  useEffect(() => {
+    schemeAPI
+      .listSchemes({ limit: 1 })
+      .then((res) => setTotalSchemes(res?.data?.pagination?.total ?? null))
+      .catch(() => setTotalSchemes(null));
+  }, []);
+
+  // Load only the signed-in user's saved schemes for the home page section.
+  const fetchSavedSchemes = useCallback(async () => {
+    if (!isLoggedIn) {
+      setSavedSchemes([]);
+      setError(null);
+      setLoading(false);
+      return;
+    }
     try {
       setLoading(true);
-      const response = await schemeAPI.listSchemes({ limit: FEATURED_COUNT, sort: "investment", order: "desc" });
-      setFeatured((response?.data?.schemes || []).map(normalizeScheme));
-      setTotalSchemes(response?.data?.pagination?.total ?? null);
+      const response = await collectionAPI.getSavedSchemes();
+      setSavedSchemes((response?.data?.schemes || []).map(normalizeScheme));
       setError(null);
     } catch (err) {
-      setError(errorMessage(err, "Failed to load schemes. Please try again later."));
-      setFeatured([]);
+      setError(errorMessage(err, "Failed to load saved schemes. Please try again later."));
+      setSavedSchemes([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [isLoggedIn]);
 
   useEffect(() => {
-    fetchFeatured();
-  }, [fetchFeatured]);
+    fetchSavedSchemes();
+  }, [fetchSavedSchemes, version]);
+
+  const visibleSaved = savedSchemes.filter((s) => savedIds.has(s.id));
 
   const browse = (q = "") => {
     if (onBrowse) onBrowse(q);
-  };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    browse(searchQuery.trim());
   };
 
   const handleStartRecommendation = () => {
@@ -63,82 +70,6 @@ function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout, onBro
 
   return (
     <div id="home" className="home">
-
-      {/* Header*/}
-
-      <header className="header">
-        <div className="header-wrapper">
-          <div className="logo-section">
-            <div className="logo">
-              <img src="/msme logo.png" alt="MSME Logo" className="logo-icon" />
-              <h1 className="logo-text">{t("brand")}</h1>
-            </div>
-          </div>
-
-          <form className="search-form" onSubmit={handleSearch}>
-            <input
-              className="search-input"
-              type="search"
-              placeholder={t("searchPlaceholder")}
-              aria-label={t("searchPlaceholder")}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <button className="search-btn" type="submit" aria-label="Search">
-              🔍
-            </button>
-          </form>
-
-          <nav className="nav">
-            <a className="nav-link" href="#home">
-              {t("navHome")}
-            </a>
-            <button type="button" className="nav-link nav-link-btn" onClick={() => browse("")}>
-              {t("navBrowse")}
-            </button>
-            {isLoggedIn && (
-              <button type="button" className="nav-link nav-link-btn" onClick={() => onNavigate && onNavigate("dashboard")}>
-                {t("navDashboard")}
-              </button>
-            )}
-            {isLoggedIn && user?.role === "admin" && (
-              <button type="button" className="nav-link nav-link-btn" onClick={() => onNavigate && onNavigate("admin")}>
-                {t("navAdmin")}
-              </button>
-            )}
-            <a className="nav-link" href="#how-it-works">
-              {t("navHowItWorks")}
-            </a>
-            <a className="nav-link" href="#contact">
-              {t("navAbout")}
-            </a>
-          </nav>
-
-          <div className="header-actions">
-            <LanguageToggle />
-
-            {isLoggedIn && user ? (
-              <div className="auth-section">
-                <span className="user-greeting">{t("welcomeUser", { name: user.name })}</span>
-                <Profile
-                  isLoggedIn={isLoggedIn} 
-                  user={user} 
-                  onNavigate={onNavigate} 
-                  onLogout={onLogout} 
-                />
-              </div>
-            ) : (
-              <Profile
-                isLoggedIn={isLoggedIn} 
-                user={user} 
-                onNavigate={onNavigate} 
-                onLogout={onLogout} 
-              />
-            )}
-          </div>
-        </div>
-      </header>
-
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
@@ -186,7 +117,7 @@ function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout, onBro
 
           <div className="step-card">
             <div className="step-number">3</div>
-            <h3 className="step-title">Learn & Apply</h3>
+            <h3 className="step-title">Apply</h3>
             <p className="step-desc">
               Get detailed information and apply directly through the portal
             </p>
@@ -198,68 +129,76 @@ function HomePage({ onFindSchemes, isLoggedIn, user, onNavigate, onLogout, onBro
         </button>
       </section>
 
-      {/* Schemes Section */}
-      <section id="schemes" className="schemes">
-        <h2 className="section-title">Featured Schemes</h2>
-        <p className="section-text featured-note">
-          Schemes with the largest project size. Use Browse to search and filter all of them by business type and state.
-        </p>
+      {/* User Saved Schemes Section (only visible when logged in) */}
+      {isLoggedIn && (
+        <section id="schemes" className="schemes">
+          <h2 className="section-title">{lang === "ta" ? "சேமித்த திட்டங்கள்" : "Your Saved Schemes"}</h2>
+          <p className="section-text featured-note">
+            {lang === "ta"
+              ? "நீங்கள் சேமித்த திட்டங்கள் இங்கே காட்டப்படும்."
+              : "Schemes you have saved for quick access. Use Browse to discover more."}
+          </p>
 
-        {loading ? (
-          <div className="loading-state">
-            <p>Loading schemes...</p>
-          </div>
-        ) : error ? (
-          <div className="error-state">
-            <p>{error}</p>
-            <button className="retry-btn" onClick={fetchFeatured}>
-              Retry
-            </button>
-          </div>
-        ) : featured.length === 0 ? (
-          <div className="empty-state">
-            <p>No schemes in the database yet.</p>
-          </div>
-        ) : (
-          <>
-            <div className="schemes-grid">
-              {featured.map((scheme) => (
-                <div key={scheme.id} className="scheme-card">
-                  <SaveButton schemeId={scheme.id} className="card-corner" />
-                  <div className="scheme-header">
-                    <h3 className="scheme-name">{scheme.name}</h3>
-                    <span className="scheme-category">
-                      {labelFor(scheme.location) || "All India"}
-                      {scheme.business_category && scheme.business_category !== "any" ? ` · ${labelFor(scheme.business_category)}` : ""}
-                    </span>
-                  </div>
-                  <p className="scheme-description">{scheme.description || "No description available"}</p>
-                  <div className="scheme-details">
-                    {scheme.benefits?.subsidy_percent !== undefined && (
-                      <div className="scheme-detail-item">
-                        <strong>Subsidy:</strong> {scheme.benefits.subsidy_percent}%
-                        {scheme.benefits.max_subsidy !== undefined && ` (up to ${formatRupees(scheme.benefits.max_subsidy)})`}
-                      </div>
-                    )}
-                    {scheme.max_investment !== null && scheme.max_investment !== undefined && (
-                      <div className="scheme-detail-item">
-                        <strong>Project size up to:</strong> {formatRupees(scheme.max_investment)}
-                      </div>
-                    )}
-                  </div>
-                  <button className="learn-more-btn" onClick={() => handleLearnMore(scheme)}>Learn More →</button>
-                </div>
-              ))}
+          {loading ? (
+            <div className="loading-state">
+              <p>{lang === "ta" ? "சேமித்த திட்டங்களை ஏற்றுகிறது..." : "Loading saved schemes..."}</p>
             </div>
-
-            <div className="toggle-container">
-              <button className="toggle-btn" onClick={() => browse("")}>
-                Browse all {totalSchemes ?? ""} schemes →
+          ) : error ? (
+            <div className="error-state">
+              <p>{error}</p>
+              <button className="retry-btn" onClick={fetchSavedSchemes}>
+                Retry
               </button>
             </div>
-          </>
-        )}
-      </section>
+          ) : visibleSaved.length === 0 ? (
+            <div className="empty-state">
+              <p>
+                {lang === "ta"
+                  ? "நீங்கள் இன்னும் எந்த திட்டத்தையும் சேமிக்கவில்லை."
+                  : "No saved schemes yet."}
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="schemes-grid">
+                {visibleSaved.map((scheme) => (
+                  <div key={scheme.id} className="scheme-card">
+                    <SaveButton schemeId={scheme.id} className="card-corner" />
+                    <div className="scheme-header">
+                      <h3 className="scheme-name">{scheme.name}</h3>
+                      <span className="scheme-category">
+                        {labelFor(scheme.location) || "All India"}
+                        {scheme.business_category && scheme.business_category !== "any" ? ` · ${labelFor(scheme.business_category)}` : ""}
+                      </span>
+                    </div>
+                    <p className="scheme-description">{scheme.description || "No description available"}</p>
+                    <div className="scheme-details">
+                      {scheme.benefits?.subsidy_percent !== undefined && (
+                        <div className="scheme-detail-item">
+                          <strong>Subsidy:</strong> {scheme.benefits.subsidy_percent}%
+                          {scheme.benefits.max_subsidy !== undefined && ` (up to ${formatRupees(scheme.benefits.max_subsidy)})`}
+                        </div>
+                      )}
+                      {scheme.max_investment !== null && scheme.max_investment !== undefined && (
+                        <div className="scheme-detail-item">
+                          <strong>Project size up to:</strong> {formatRupees(scheme.max_investment)}
+                        </div>
+                      )}
+                    </div>
+                    <button className="learn-more-btn" onClick={() => handleLearnMore(scheme)}>Learn More →</button>
+                  </div>
+                ))}
+              </div>
+
+              <div className="toggle-container">
+                <button className="toggle-btn" onClick={() => browse("")}>
+                  Browse all {totalSchemes ?? ""} schemes →
+                </button>
+              </div>
+            </>
+          )}
+        </section>
+      )}
 
       {/* About Section */}
       <section className="about">

@@ -11,7 +11,7 @@
 
 .recommendation-section {
   background-color: white;
-  padding: 80px 20px;
+  padding: 28px 20px;
   border-top: 1px solid #f0f0f0;
 }
 
@@ -22,18 +22,18 @@
 
 .recommendation-header {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 24px;
 }
 
 .recommendation-header h2 {
-  font-size: 36px;
+  font-size: 30px;
   font-weight: 700;
   color: #333;
-  margin-bottom: 15px;
+  margin-bottom: 8px;
 }
 
 .recommendation-header p {
-  font-size: 18px;
+  font-size: 16px;
   color: #666;
   max-width: 600px;
   margin: 0 auto;
@@ -41,8 +41,15 @@
 
 .recommendation-content {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.recommendation-content > * {
+  max-height: calc(100vh - 150px);
+  overflow-y: auto;
+  padding-right: 6px;
 }
 
    /* FORM & RESULTS CONTAINERS */
@@ -171,6 +178,12 @@
 @media (max-width: 768px) {
   .recommendation-content {
     grid-template-columns: 1fr;
+  }
+
+  .recommendation-content > * {
+    max-height: none;
+    overflow-y: visible;
+    padding-right: 0;
   }
 
   .container {

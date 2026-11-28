@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { schemeAPI, profileAPI } from '../services/api';
+import { schemeAPI } from '../services/api';
 import '../styles/Recommentationform.css';
 
 const SchemeRecommendationForm = ({ onRecommendations, onLoading }) => {
@@ -22,36 +22,6 @@ const SchemeRecommendationForm = ({ onRecommendations, onLoading }) => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formProgress, setFormProgress] = useState(0);
-
-  // Pre-fill from the saved business profile (if any)
-  useEffect(() => {
-    let cancelled = false;
-    const s = (v) => (v === null || v === undefined ? '' : String(v));
-    profileAPI
-      .getProfile()
-      .then((res) => {
-        const p = res?.data?.profile;
-        if (!p || cancelled) return;
-        setFormData({
-          age: s(p.age),
-          gender: s(p.gender),
-          business_category: s(p.business_category),
-          investment: s(p.investment),
-          location: s(p.state),
-          social_category: s(p.social_category),
-          beneficiary_category: s(p.special_category),
-          income: s(p.annual_income),
-          education: s(p.education),
-          experience: s(p.experience_years),
-          is_new_enterprise: p.is_new_enterprise === true ? 'yes' : p.is_new_enterprise === false ? 'no' : '',
-          business_description: s(p.business_description),
-        });
-      })
-      .catch(() => {}); // no saved profile / offline: start with an empty form
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   // Calculate form completion progress
   useEffect(() => {

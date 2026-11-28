@@ -3,14 +3,14 @@ import HomePage from './Home/Homepage.jsx';
 import SignIn from './components/SignIn.jsx';
 import SignUp from './components/SignUp.jsx';
 import ForgotPassword from './components/ForgotPassword.jsx';
-import RecommendationForm from './components/RecommendationForm.jsx';
-import RecommendedSchemes from './components/RecommendedSchemes.jsx';
+import RecommendationPage from './components/RecommendationPage.jsx';
 import DiscoverSchemes from './components/DiscoverSchemes.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import AdminDashboard from './components/AdminDashboard.jsx';
+import SiteHeader from './components/SiteHeader.jsx';
 import ChatWidget from './components/ChatWidget.jsx';
 import { SavedSchemesProvider, useSavedSchemes } from './context/SavedSchemesContext';
-import { LanguageProvider, useLanguage } from './context/LanguageContext';
+import { LanguageProvider } from './context/LanguageContext';
 import './styles/SaveButton.css';
 import { authAPI } from './services/api';
 import './styles/App.css';
@@ -38,7 +38,6 @@ function App() {
   const [recommendations, setRecommendations] = useState([]);
   const [rankedBy, setRankedBy] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [showRecommendationForm, setShowRecommendationForm] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -86,36 +85,35 @@ function App() {
       setIsLoggedIn(false);
       setUser(null);
       setRecommendations([]);
+      setRankedBy(null);
       setCurrentPage('signin');
     };
     window.addEventListener('auth:expired', onExpired);
     return () => window.removeEventListener('auth:expired', onExpired);
   }, []);
 
-  const handleShowRecommendation = () => {
+  const handleShowRecommendation = useCallback(() => {
     if (!isLoggedIn) {
       setCurrentPage('signin');
       return;
     }
-    
-    setShowRecommendationForm(true);
-    setTimeout(() => {
-      const element = document.getElementById('recommendation');
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100);
-  };
+    setCurrentPage('recommend');
+    window.scrollTo(0, 0);
+  }, [isLoggedIn]);
 
   const handleLoginSuccess = (userData) => {
     setIsLoggedIn(true);
     setUser(userData);
+    setRecommendations([]);
+    setRankedBy(null);
     setCurrentPage('home');
   };
 
   const handleSignupSuccess = (userData) => {
     setIsLoggedIn(true);
     setUser(userData);
+    setRecommendations([]);
+    setRankedBy(null);
     setCurrentPage('home');
   };
 
@@ -123,6 +121,8 @@ function App() {
     authAPI.logout();
     setIsLoggedIn(false);
     setUser(null);
+    setRecommendations([]);
+    setRankedBy(null);
     setCurrentPage('home');
   };
 
@@ -138,15 +138,16 @@ function App() {
     handleNavigate('discover');
   };
 
-  // From the dashboard: go back to the home page and open the recommendation form.
+  // From the dashboard: open the recommendation page.
   const handleFindFromDashboard = () => {
-    setCurrentPage('home');
     handleShowRecommendation();
   };
 
-  // The dashboard needs a signed-in user; send everyone else to sign in.
+  // Protected pages need a signed-in user; send everyone else to sign in.
   useEffect(() => {
-    if ((currentPage === 'dashboard' || currentPage === 'admin') && !isLoggedIn) setCurrentPage('signin');
+    if ((currentPage === 'dashboard' || currentPage === 'admin' || currentPage === 'recommend') && !isLoggedIn) {
+      setCurrentPage('signin');
+    }
   }, [currentPage, isLoggedIn]);
 
   return (
@@ -157,7 +158,6 @@ function App() {
         recommendations={recommendations}
         rankedBy={rankedBy}
         isLoading={isLoading}
-        showRecommendationForm={showRecommendationForm}
         isLoggedIn={isLoggedIn}
         user={user}
         setRecommendations={setRecommendations}
@@ -182,7 +182,6 @@ function AppContent({
   recommendations,
   rankedBy,
   isLoading,
-  showRecommendationForm,
   isLoggedIn,
   user,
   setRecommendations,
@@ -197,44 +196,43 @@ function AppContent({
   handleBrowse,
   handleFindFromDashboard,
 }) {
-  const { t } = useLanguage();
+  const showSharedHeader = ['home', 'recommend', 'discover', 'dashboard', 'admin'].includes(currentPage);
 
   return (
     <SavedSchemesProvider isLoggedIn={isLoggedIn} onRequireLogin={requireLogin}>
     <div className="App">
+      {showSharedHeader && (
+        <SiteHeader
+          currentPage={currentPage}
+          isLoggedIn={isLoggedIn}
+          user={user}
+          onNavigate={handleNavigate}
+          onLogout={handleLogout}
+          onBrowse={handleBrowse}
+          onFindSchemes={handleShowRecommendation}
+        />
+      )}
+
       {currentPage === 'home' && (
-        <>
-          <HomePage 
-            onFindSchemes={handleShowRecommendation}
-            isLoggedIn={isLoggedIn}
-            user={user}
-            onNavigate={handleNavigate}
-            onLogout={handleLogout}
-            onBrowse={handleBrowse}
-          />
+        <HomePage
+          onFindSchemes={handleShowRecommendation}
+          isLoggedIn={isLoggedIn}
+          onBrowse={handleBrowse}
+        />
+      )}
 
-          {showRecommendationForm && (
-            <section id="recommendation" className="recommendation-section">
-              <div className="recommendation-container">
-                <div className="recommendation-header">
-                  <h2>{t('recSectionTitle')}</h2>
-                  <p>{t('recSectionSubtitle')}</p>
-                </div>
-
-                <div className="recommendation-content">
-                  <RecommendationForm
-                    onRecommendations={(list, meta) => {
-                      setRecommendations(list);
-                      setRankedBy(meta?.ranked_by || null);
-                    }}
-                    onLoading={setIsLoading}
-                  />
-                  <RecommendedSchemes schemes={recommendations} isLoading={isLoading} rankedBy={rankedBy} />
-                </div>
-              </div>
-            </section>
-          )}
-        </>
+      {currentPage === 'recommend' && isLoggedIn && (
+        <RecommendationPage
+          key={user?.id || 'anon'}
+          recommendations={recommendations}
+          rankedBy={rankedBy}
+          isLoading={isLoading}
+          onRecommendations={(list, meta) => {
+            setRecommendations(list);
+            setRankedBy(meta?.ranked_by || null);
+          }}
+          onLoading={setIsLoading}
+        />
       )}
 
       {currentPage === 'discover' && (
